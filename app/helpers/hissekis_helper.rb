@@ -1,0 +1,2 @@
+module HissekisHelper
+end
