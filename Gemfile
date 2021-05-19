@@ -31,6 +31,11 @@ gem 'bootsnap', '>= 1.4.4', require: false
 # 画像アップロード用
 gem 'carrierwave'
 
+# 筆跡判定用
+gem "numpy"
+gem "pycall"
+gem "pandas"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
