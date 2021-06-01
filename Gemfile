@@ -32,9 +32,9 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'carrierwave'
 
 # 筆跡判定用
-gem "numpy"
+# gem "numpy"
 gem "pycall"
-gem "pandas"
+# gem "pandas"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

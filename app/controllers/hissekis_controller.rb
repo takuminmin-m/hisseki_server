@@ -1,10 +1,10 @@
 class HissekisController < ApplicationController
-  # before_action :set_hisseki, only: [:show, :edit, :update, :destroy]
+  before_action :set_hisseki, only: :destroy
 
   # GET /hissekis or /hissekis.json
-  #def index
-  #  @hissekis = Hisseki.all
-  #end
+  def index
+    @hissekis = Hisseki.all
+  end
 
   # GET /hissekis/1 or /hissekis/1.json
   #def show; end
@@ -78,6 +78,8 @@ class HissekisController < ApplicationController
   end
 
   def hisseki_params
-    params.require(:hisseki).permit(:image)
+    all_params = params.require(:hisseki).permit(:image)
+    all_params[:user_id] = session[:user_id]
+    all_params
   end
 end

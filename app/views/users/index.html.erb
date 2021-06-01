@@ -16,7 +16,7 @@
         <td><%= user.name %></td>
         <td><%= link_to 'Show', user %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to "Be #{user.name}", user, method: :delete %></td>
       </tr>
     <% end %>
   </tbody>
@@ -28,3 +28,5 @@
 
 <br>
 <%= link_to "Send Hisseki", new_hisseki_path %>
+<br>
+<%= link_to "Hissekis list", hissekis_path %>
