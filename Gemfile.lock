@@ -119,11 +119,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.11.3-x86_64-linux)
       racc (~> 1.4)
-    numpy (0.3.0)
-      pycall (>= 1.2.0.beta1)
-    pandas (0.3.5)
-      numpy
-      pycall (>= 1.0.0)
     parallel (1.20.1)
     parser (3.0.1.1)
       ast (~> 2.4.1)
@@ -258,8 +253,6 @@ DEPENDENCIES
   carrierwave
   jbuilder (~> 2.7)
   listen (~> 3.3)
-  numpy
-  pandas
   puma (~> 5.0)
   pycall
   rack-mini-profiler (~> 2.0)
