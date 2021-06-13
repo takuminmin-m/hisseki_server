@@ -28,6 +28,8 @@ class HissekisController < ApplicationController
         format.html { render :new, status: :unprocessable_entity }
       end
     end
+
+    LearnHissekiJob.perform_later
   end
 
   # PATCH/PUT /hissekis/1 or /hissekis/1.json
