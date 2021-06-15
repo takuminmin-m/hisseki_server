@@ -1,4 +1,6 @@
-<%= form_with(model: hisseki) do |form| %>
+<%= javascript_pack_tag "hisseki/drawer.js" %>
+
+<%= form_with(model: hisseki, id: :hisseki_form) do |form| %>
   <% if hisseki.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(hisseki.errors.count, "error") %> prohibited this hisseki from being saved:</h2>
