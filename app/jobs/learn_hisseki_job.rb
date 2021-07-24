@@ -27,7 +27,7 @@ class LearnHissekiJob < ApplicationJob
     learn_labels = np.array hissekis.map { |hisseki| hisseki.label }
 
     model = models.Sequential.new([
-      layers.Conv2D.new(64, [5, 5], activation: :relu, input_shape: [118, 128, 1]),
+      layers.Conv2D.new(64, [5, 5], activation: :relu, input_shape: [128, 128, 1]),
       layers.MaxPooling2D.new([4, 4]),
       layers.Conv2D.new(64, [5, 5], activation: :relu),
       layers.MaxPooling2D.new([4, 4]),
