@@ -32,6 +32,8 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'carrierwave'
 # canvasの画像をdataurlでアップロードできるように
 gem "carrierwave-data-uri"
+# 画像のバリデーション用に imagemagick必須
+gem "mini_magick"
 
 # 筆跡判定用
 # gem "numpy"

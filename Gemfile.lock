@@ -262,6 +262,7 @@ DEPENDENCIES
   carrierwave-data-uri
   jbuilder (~> 2.7)
   listen (~> 3.3)
+  mini_magick
   puma (~> 5.0)
   pycall
   rack-mini-profiler (~> 2.0)
