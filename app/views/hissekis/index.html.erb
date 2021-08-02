@@ -14,7 +14,8 @@
     <% @hissekis.each do |hisseki| %>
       <tr>
         <td><%= hisseki.id %></td>
-        <td><%= hisseki.user_id %></td>
+        <td><%= hisseki.user.name %></td>
+        <td><%= image_tag hisseki.image.url %></td>
       </tr>
     <% end %>
   </tbody>
@@ -22,6 +23,6 @@
 
 
 <br>
-<%= link_to "Send Hisseki", new_hisseki_path %>
+<%= link_to "Send Hisseki", new_hisseki_path, "data-turbolinks": false %>
 <br>
 <%= link_to "Hisseki list", hissekis_path %>

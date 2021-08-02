@@ -20,16 +20,18 @@ class HissekisController < ApplicationController
   # POST /hissekis or /hissekis.json
   def create
     @hisseki = Hisseki.new(hisseki_params)
+    puts request.body
 
-    respond_to do |format|
-      if @hisseki.save
-        format.html { redirect_to root_path, notice: "Hisseki was successfully created." }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-      end
+    @json_return = if @hisseki.save
+      # js側でリダイレクトさせる
+      LearnHissekiJob.perform_later
+      {url: hissekis_url}
+    else
+      # js側でエラーメッセージを表示
+      {message: @hisseki.errors.map{ |error| error.full_message }.join("\n")}
     end
 
-    LearnHissekiJob.perform_later
+    render json: @json_return
   end
 
   # PATCH/PUT /hissekis/1 or /hissekis/1.json
@@ -80,7 +82,12 @@ class HissekisController < ApplicationController
   end
 
   def hisseki_params
-    all_params = params.require(:hisseki).permit(:image)
+    all_params =
+    begin
+      params.require(:hisseki).permit(:image)
+    rescue
+      params.permit(:image_data_uri)
+    end
     all_params[:user_id] = session[:user_id]
     all_params
   end

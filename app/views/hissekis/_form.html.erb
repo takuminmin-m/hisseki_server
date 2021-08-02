@@ -1,4 +1,7 @@
 <%= javascript_pack_tag "hisseki/drawer.js" %>
+<script type="text/javascript">
+  const url4send = "<%= hissekis_url %>"
+</script>
 
 <%= form_with(model: hisseki, id: :hisseki_form) do |form| %>
   <% if hisseki.errors.any? %>
@@ -13,10 +16,7 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :image %>
-    <%= form.file_field :image %>
-  </div>
+  <canvas id="board" width="128" height="128" style="border: 1px solid #000000;"></canvas>
 
   <div class="actions">
     <%= form.submit %>
