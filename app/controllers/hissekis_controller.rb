@@ -24,7 +24,6 @@ class HissekisController < ApplicationController
 
     @json_return = if @hisseki.save
       # js側でリダイレクトさせる
-      LearnHissekiJob.perform_later
       {url: hissekis_url}
     else
       # js側でエラーメッセージを表示
@@ -32,6 +31,7 @@ class HissekisController < ApplicationController
     end
 
     render json: @json_return
+    LearnHissekiJob.perform_later
   end
 
   # PATCH/PUT /hissekis/1 or /hissekis/1.json

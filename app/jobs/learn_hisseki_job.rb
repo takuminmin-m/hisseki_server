@@ -3,6 +3,19 @@ class LearnHissekiJob < ApplicationJob
   require 'pycall/import'
   include PyCall::Import
 
+  class Array
+    def delete_dir
+      self.delete_if { |filename| File::ftype(filename) == "directory" }
+    end
+
+    def pickup!(begin_index, quantity)
+      picked = self.slice(begin_index, quantity)
+      self.slice!(begin_index, quantity)
+      picked
+    end
+  end
+
+
   def perform
     pyimport :tensorflow, as: :tf
     pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
@@ -14,7 +27,7 @@ class LearnHissekiJob < ApplicationJob
     hisseki_image_paths = datas.map { |hisseki| hisseki.image.current_path }
     hisseki_images = read_images(hisseki_image_paths)
     hisseki_images.map! { |image| tf.cast(image, tf.float32) / 255.0 }
-    hissekis = datas.map_with_index do |hisseki, i|
+    hissekis = datas.map.with_index do |hisseki, i|
       {
         label: hisseki.user_id,
         image: hisseki_images[i]
@@ -23,8 +36,11 @@ class LearnHissekiJob < ApplicationJob
     hissekis.shuffle!
     puts "LearnHissekiJob: loaded hissekis"
 
-    learn_images = np.array hissekis.map { |hisseki| hisseki.image }
-    learn_labels = np.array hissekis.map { |hisseki| hisseki.label }
+    learn_images = np.array hissekis.map { |hisseki| hisseki[:image] }
+    learn_labels = np.array hissekis.map { |hisseki| hisseki[:label] }
+
+    member_num = hissekis.map { |hisseki| hisseki[:label] }.uniq.length + 1
+    puts "member_num: #{member_num}"
 
     model = models.Sequential.new([
       layers.Conv2D.new(64, [5, 5], activation: :relu, input_shape: [128, 128, 1]),
@@ -34,7 +50,7 @@ class LearnHissekiJob < ApplicationJob
       layers.Conv2D.new(32, [5, 5], activation: :relu),
       layers.Flatten.new,
       layers.Dense.new(128, activation: :relu),
-      layers.Dense.new(members.length, activation: :softmax)
+      layers.Dense.new(member_num, activation: :softmax)
     ])
 
     adam = tf.keras.optimizers.Adam.new(
@@ -48,6 +64,15 @@ class LearnHissekiJob < ApplicationJob
     )
     model.fit learn_images, learn_labels, epochs: 20
 
-    # model.save("models/tf/#{t_str}")
+    model.save("ml/test.tf")
   end
+
+
+  private
+
+    def read_images(filenames)
+      filenames.map do |filename|
+        tf.image.decode_image(tf.io.read_file(filename), channels: 1)
+      end
+    end
 end
