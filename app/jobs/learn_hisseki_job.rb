@@ -1,20 +1,5 @@
 class LearnHissekiJob < ApplicationJob
   queue_as :default
-  require 'pycall/import'
-  include PyCall::Import
-
-  class Array
-    def delete_dir
-      self.delete_if { |filename| File::ftype(filename) == "directory" }
-    end
-
-    def pickup!(begin_index, quantity)
-      picked = self.slice(begin_index, quantity)
-      self.slice!(begin_index, quantity)
-      picked
-    end
-  end
-
 
   def perform
     pyimport :tensorflow, as: :tf
@@ -68,11 +53,5 @@ class LearnHissekiJob < ApplicationJob
   end
 
 
-  private
 
-    def read_images(filenames)
-      filenames.map do |filename|
-        tf.image.decode_image(tf.io.read_file(filename), channels: 1)
-      end
-    end
 end
