@@ -49,7 +49,7 @@ class LearnHissekiJob < ApplicationJob
     )
     model.fit learn_images, learn_labels, epochs: 20
 
-    model.save("ml/test.tf")
+    model.save("ml/hisseki_classification.tf")
   end
 
 
