@@ -80,15 +80,15 @@ class HissekisController < ApplicationController
   def set_hisseki
     @hisseki = Hisseki.find(params[:id])
   end
-
-  def hisseki_params
-    all_params =
-    begin
-      params.require(:hisseki).permit(:image)
-    rescue
-      params.permit(:image_data_uri)
-    end
-    all_params[:user_id] = session[:user_id]
-    all_params
-  end
+  #
+  # def hisseki_params
+  #   all_params =
+  #   begin
+  #     params.require(:hisseki).permit(:image)
+  #   rescue
+  #     params.permit(:image_data_uri)
+  #   end
+  #   all_params[:user_id] = session[:user_id]
+  #   all_params
+  # end
 end
