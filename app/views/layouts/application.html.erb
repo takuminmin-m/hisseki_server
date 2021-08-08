@@ -12,6 +12,21 @@
 
   <body>
     <%= link_to "home", root_path %>
+    <% if logged_in? %>
+      <%= link_to "logout", logout_path, method: :delete %>
+      <%= link_to "hisseki_list", hissekis_path %>
+    <% else %>
+      <%= link_to "login", login_path %>
+      <%= link_to "new user", new_user_path %>
+    <% end %>
+    <% if logged_in? %>
+    <br>
+      <div>
+        id: <%= current_user.id %>
+        <br>
+        name: <%= current_user.name %>
+      </div>
+    <% end %>
     <%= yield %>
   </body>
 </html>
