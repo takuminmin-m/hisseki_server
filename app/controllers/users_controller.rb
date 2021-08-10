@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  # before_action :set_user, only: [:edit, :destroy]
+  before_action :set_user, only: :destroy
 
   def new
     @user = User.new
@@ -18,6 +18,11 @@ class UsersController < ApplicationController
 
   def index
     @users = User.all
+  end
+
+  def destroy
+    @user.destroy
+    redirect_to root_url
   end
 
   private

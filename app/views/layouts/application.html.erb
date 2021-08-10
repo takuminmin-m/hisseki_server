@@ -25,6 +25,8 @@
         id: <%= current_user.id %>
         <br>
         name: <%= current_user.name %>
+        <br>
+        <%= link_to "delete this account", current_user, method: :delete, data: { confirm: "You sure?" } %>
       </div>
     <% end %>
     <%= yield %>
