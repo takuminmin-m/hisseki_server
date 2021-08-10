@@ -29,6 +29,8 @@
         <%= link_to "delete this account", current_user, method: :delete, data: { confirm: "You sure?" } %>
       </div>
     <% end %>
+    <p id="notice"><%= notice %></p>
+    <p id="alert" ><%= alert %></p>
     <%= yield %>
   </body>
 </html>

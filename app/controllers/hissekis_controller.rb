@@ -1,5 +1,6 @@
 class HissekisController < ApplicationController
   before_action :set_hisseki, only: :destroy
+  before_action :require_login
 
   # GET /hissekis or /hissekis.json
   def index
