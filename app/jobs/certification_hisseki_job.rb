@@ -4,8 +4,6 @@ class CertificationHissekiJob < ApplicationJob
   include PyCall::Import
 
   def perform(hisseki_path)
-    users = np.array ["takumi", "tanbo"]
-
     user_classification_model = models.load_model("ml/hisseki_classification.tf")
     # user_certification_model = models.load_model("models/tf_pair/2021724202849")
 

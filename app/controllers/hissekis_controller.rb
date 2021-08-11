@@ -21,7 +21,6 @@ class HissekisController < ApplicationController
   # POST /hissekis or /hissekis.json
   def create
     @hisseki = Hisseki.new(hisseki_params)
-    puts request.body
 
     @json_return = if @hisseki.save
       # js側でリダイレクトさせる
