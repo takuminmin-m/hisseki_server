@@ -12,7 +12,7 @@ class LearnHissekiJob < ApplicationJob
     make_classification_model(hisseki_datas).save("ml/hisseki_classification.tf")
     puts "LearnHissekiJob: saved classification model"
 
-    make_certification_model(hisseki_datas).save("ml/hisseki_certification_model.tf")
+    make_certification_model(hisseki_datas).save("ml/hisseki_certification.tf")
     puts "LearnHissekiJob: saved certification model"
 
     puts "LearnHissekiJob: finished job"
