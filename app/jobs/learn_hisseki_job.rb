@@ -165,7 +165,7 @@ class LearnHissekiJob < ApplicationJob
       metrics: [:accuracy]
     )
 
-    model.fit train_images, train_labels, epochs: 20, verbose: 1
+    model.fit train_images, train_labels, epochs: 20, verbose: 0
     puts "LearnHissekiJob: finish making certification model"
 
     model
