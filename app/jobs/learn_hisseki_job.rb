@@ -2,16 +2,18 @@ class LearnHissekiJob < ApplicationJob
   queue_as :default
 
   def perform
-    python_library_import
-    hisseki_datas = set_datas
+    fork do
+      python_library_import
+      hisseki_datas = set_datas
 
-    make_classification_model(hisseki_datas).save("ml/hisseki_classification.tf")
-    puts "LearnHissekiJob: saved classification model"
+      make_classification_model(hisseki_datas).save("ml/hisseki_classification.tf")
+      puts "LearnHissekiJob: saved classification model"
 
-    make_certification_model(hisseki_datas).save("ml/hisseki_certification.tf")
-    puts "LearnHissekiJob: saved certification model"
+      make_certification_model(hisseki_datas).save("ml/hisseki_certification.tf")
+      puts "LearnHissekiJob: saved certification model"
 
-    puts "LearnHissekiJob: finished job"
+      puts "LearnHissekiJob: finished job"
+    end
   end
 
   private
