@@ -1,3 +1,15 @@
+GIT
+  remote: https://github.com/mrkn/pycall.rb.git
+  revision: df21b838e6faa6834d9d0d0ecc1692c0e4f224f8
+  specs:
+    pycall (1.4.1)
+
+GIT
+  remote: https://github.com/ruby-concurrency/concurrent-ruby.git
+  revision: 737da67d6d7d18daec798249e1da015ca17f897c
+  specs:
+    concurrent-ruby (1.1.9)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -90,7 +102,6 @@ GEM
       data_uri
       mime-types
     childprocess (3.0.0)
-    concurrent-ruby (1.1.9)
     crass (1.0.6)
     data_uri (0.1.0)
     erubi (1.10.0)
@@ -164,7 +175,6 @@ GEM
     public_suffix (4.0.6)
     puma (5.4.0)
       nio4r (~> 2.0)
-    pycall (1.4.1)
     racc (1.5.2)
     rack (2.2.3)
     rack-mini-profiler (2.3.2)
@@ -297,11 +307,12 @@ DEPENDENCIES
   capybara (>= 3.26)
   carrierwave
   carrierwave-data-uri
+  concurrent-ruby!
   jbuilder (~> 2.7)
   listen (~> 3.3)
   mini_magick
   puma (~> 5.0)
-  pycall
+  pycall!
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.3, >= 6.1.3.1)
   rubocop

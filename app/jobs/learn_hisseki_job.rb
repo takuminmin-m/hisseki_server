@@ -16,6 +16,15 @@ class LearnHissekiJob < ApplicationJob
 
   private
 
+  # pythonライブラリのインポート
+  def python_library_import
+    pyimport :tensorflow, as: :tf
+    pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
+    pyimport :numpy, as: :np
+
+    puts "PyCall info: imported python libraries"
+  end
+
   # 画像ファイルをすべて読み込む
   # return_value = [
   #   {
@@ -93,7 +102,7 @@ class LearnHissekiJob < ApplicationJob
     learn_images = np.array learn_datas.map { |data| data[:image] }
     learn_labels = np.array learn_datas.map { |data| data[:label] }
 
-    member_num = User.last.id
+    member_num = User.last.id + 1
 
     puts "LearnHissekiJob: start to make classification model"
     model = models.Sequential.new([

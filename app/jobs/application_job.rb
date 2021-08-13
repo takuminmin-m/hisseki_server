@@ -21,17 +21,6 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
-  # pythonライブラリのインポート
-  def python_library_import
-    pyimport :tensorflow, as: :tf
-    pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
-    pyimport :numpy, as: :np
-
-    puts "PyCall info: imported python libraries"
-    GC.start
-    puts "PyCall info: GC.start"
-  end
-
   # 画像を読み込む
   def read_images(filenames)
     filenames.map do |filename|

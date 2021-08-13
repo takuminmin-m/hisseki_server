@@ -11,6 +11,7 @@ class CertificationHissekiJob < ApplicationJob
     target_images = np.array target_images
     classification_predictions = user_classification_model.predict target_images
     puts "CertificationHissekiJob: predicted user"
+    p classification_predictions[0]
 
     target_user = User.find(np.argmax(classification_predictions[0]))
     target_user_hissekis = target_user.hissekis
@@ -26,4 +27,15 @@ class CertificationHissekiJob < ApplicationJob
     return target_user if np.argmax(certification_predictions[0]) == 1
     nil
   end
+
+  private
+
+  # pythonライブラリのインポート
+  def python_library_import
+    pyimport :tensorflow, as: :tf
+    pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
+    pyimport :numpy, as: :np
+    puts "PyCall info: imported python libraries"
+  end
+
 end
