@@ -80,8 +80,4 @@ class HissekisController < ApplicationController
   def set_hisseki
     @hisseki = Hisseki.find(params[:id])
   end
-
-  def hisseki_params
-    params.permit(:image_data_uri)
-  end
 end

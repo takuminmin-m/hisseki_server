@@ -18,7 +18,7 @@ const Banner = {
 
 
   window.onload = ()=>{
-    enable_submit_button();
+    enable_submit_button()
 
    board = document.querySelector("#board");
    context = board.getContext('2d');
@@ -49,7 +49,7 @@ const Banner = {
       // ドラッグ中の線の開始位置
       context.moveTo(lastPosition.x, lastPosition.y);
     }
-    context.lineTo(x, y);
+context.lineTo(x, y);
 
     // context.moveTo, context.lineToの値を元に実際に線を引く
     context.stroke();
@@ -91,6 +91,31 @@ const Banner = {
       });
     }
 
+    function pos(e) {
+      var x, y;
+      x = e.clientX - board.getBoundingClientRect().left;
+      y = e.clientY - board.getBoundingClientRect().top;
+      return [x, y];
+    }
+
+    function touch(canvas){
+console.log("touch");
+      canvas.addEventListener('touchstart', function(e) {
+        dragStart();
+      }, false);
+      canvas.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        const x = pos(e.changedTouches[0])[0];
+        const y = pos(e.changedTouches[0])[1];
+        draw(x, y);
+      }, false);
+      canvas.addEventListener('touchend', function(e) {
+        dragEnd();
+      }, false);
+    }
+
+    touch(board);
+
     // イベント処理を初期化する
     initEventHandler();
   };
@@ -115,9 +140,9 @@ document.onkeydown = function(){
   function clear() {
       context.clearRect(0, 0, board.width, board.height);
     }
- console.log(event.keyCode)
- number = event.keyCode;
- if (number == 13) {
+ console.log (event.keyCode)
+ numbers =(event.keyCode);
+ if (numbers==13) {
      clear();
  }
 };
@@ -139,11 +164,11 @@ const enable_submit_button = () => {
     fetch(url4send, data)
     .then(response => response.json())
     .then(data => {
-      if (data["url"]) {
-        location.href = data["url"];
-      }
       if (data["message"]) {
         alert(data["message"]);
+      }
+      if (data["url"]) {
+        location.href = data["url"];
       }
     });
   });

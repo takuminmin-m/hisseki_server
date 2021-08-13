@@ -1,11 +1,5 @@
 <h1>Sign in</h1>
-<%= form_with(url: login_path) do |form| %>
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+<script type="text/javascript">
+  const url4send = "<%= login_url %>";
+</script>
+<%= render "hissekis/form", hisseki: @hisseki %>

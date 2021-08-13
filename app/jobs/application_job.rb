@@ -21,9 +21,26 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
-    def read_images(filenames)
-      filenames.map do |filename|
-        tf.image.decode_image(tf.io.read_file(filename), channels: 1)
-      end
+  # pythonライブラリのインポート
+  def python_library_import
+    pyimport :tensorflow, as: :tf
+    pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
+    pyimport :numpy, as: :np
+
+    puts "PyCall info: imported python libraries"
+    GC.start
+    puts "PyCall info: GC.start"
+  end
+
+  # 画像を読み込む
+  def read_images(filenames)
+    filenames.map do |filename|
+      tf.image.decode_image(tf.io.read_file(filename), channels: 1)
     end
+  end
+
+  # image1とimage2をくっつける
+  def stick_images(image1, image2)
+    tf.reshape(tf.concat([image1, image2], 0), [128, 256, 1])
+  end
 end

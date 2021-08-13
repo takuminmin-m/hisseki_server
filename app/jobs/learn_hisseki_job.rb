@@ -2,11 +2,7 @@ class LearnHissekiJob < ApplicationJob
   queue_as :default
 
   def perform
-    pyimport :tensorflow, as: :tf
-    pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
-    pyimport :numpy, as: :np
-    pyimport "matplotlib.pyplot", as: :plt
-
+    python_library_import
     hisseki_datas = set_datas
 
     make_classification_model(hisseki_datas).save("ml/hisseki_classification.tf")
@@ -87,10 +83,10 @@ class LearnHissekiJob < ApplicationJob
     [matched_pairs, not_matched_pairs]
   end
 
-  # image1とimage2をくっつける
-  def stick_images(image1, image2)
-    tf.reshape(tf.concat([image1, image2], 0), [128, 256, 1])
-  end
+  # # image1とimage2をくっつける
+  # def stick_images(image1, image2)
+  #   tf.reshape(tf.concat([image1, image2], 0), [128, 256, 1])
+  # end
 
   # ユーザー分類用モデルを作る
   def make_classification_model(learn_datas)

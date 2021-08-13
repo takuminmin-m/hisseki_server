@@ -1,5 +1,11 @@
 class ApplicationController < ActionController::Base
 
+  private
+  
+  def hisseki_params
+    params.permit(:image_data_uri)
+  end
+
   protected
 
   def not_authenticated

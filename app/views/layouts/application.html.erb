@@ -16,7 +16,7 @@
       <%= link_to "logout", logout_path, method: :delete %>
       <%= link_to "hisseki_list", hissekis_path %>
     <% else %>
-      <%= link_to "login", login_path %>
+      <%= link_to "login", login_path, "data-turbolinks":false %>
       <%= link_to "new user", new_user_path %>
     <% end %>
     <% if logged_in? %>

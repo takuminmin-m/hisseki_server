@@ -1,7 +1,4 @@
 <%= javascript_pack_tag "hisseki/drawer.js" %>
-<script type="text/javascript">
-  const url4send = "<%= hissekis_url %>"
-</script>
 
 <%= form_with(model: hisseki, id: :hisseki_form) do |form| %>
   <% if hisseki.errors.any? %>
