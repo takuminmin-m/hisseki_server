@@ -5,13 +5,16 @@ class UserSessionsController < ApplicationController
 
   def create
     @hisseki = Hisseki.new(hisseki_params)
-    user_name = CertificationHissekiJob.perform_now(@hisseki.image.current_path).name
+    user_name = CertificationHissekiJob.perform_now(@hisseki.image.current_path)&.name
 
     p user_name
 
     unless user_name
       # js側でエラーメッセージを表示
-      @json_return = {message: "faild to certificate"}
+      @json_return = {
+        message: "faild to certificate",
+        url: login_url
+      }
       render json: @json_return
       return
     end
