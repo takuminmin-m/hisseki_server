@@ -17,7 +17,7 @@ class CertificationHissekiJob < ApplicationJob
       classification_predictions = user_classification_model.predict target_images
       p classification_predictions
       puts "CertificationHissekiJob: predicted user"
-      certification_bool = np.amin(classification_predictions[0]) < 1.0e-13
+      certification_bool = np.amin(classification_predictions[0]) < 1.0e-5
 
       if numpy_to_logical certification_bool
         p "do true"
