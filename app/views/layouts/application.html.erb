@@ -12,6 +12,7 @@
 
   <body>
     <%= link_to "home", root_path %>
+    <%= link_to "learn(Don't push!!!!!!)", learn_path, method: :post %>
     <% if logged_in? %>
       <%= link_to "logout", logout_path, method: :delete %>
       <%= link_to "hisseki_list", hissekis_path %>

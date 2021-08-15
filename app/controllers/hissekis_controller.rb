@@ -34,6 +34,11 @@ class HissekisController < ApplicationController
     # LearnHissekiJob.perform_later
   end
 
+  def learn
+    LearnHissekiJob.perform_later
+    redirect_to hissekis_url
+  end
+
   # PATCH/PUT /hissekis/1 or /hissekis/1.json
   #def update
   #  respond_to do |format|
