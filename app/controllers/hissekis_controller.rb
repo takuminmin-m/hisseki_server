@@ -31,7 +31,7 @@ class HissekisController < ApplicationController
     end
 
     render json: @json_return
-    LearnHissekiJob.perform_later
+    # LearnHissekiJob.perform_later
   end
 
   # PATCH/PUT /hissekis/1 or /hissekis/1.json

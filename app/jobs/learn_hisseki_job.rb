@@ -9,8 +9,8 @@ class LearnHissekiJob < ApplicationJob
       make_classification_model(hisseki_datas).save("ml/hisseki_classification.tf")
       puts "LearnHissekiJob: saved classification model"
 
-      make_certification_model(hisseki_datas).save("ml/hisseki_certification.tf")
-      puts "LearnHissekiJob: saved certification model"
+      # make_certification_model(hisseki_datas).save("ml/hisseki_certification.tf")
+      # puts "LearnHissekiJob: saved certification model"
 
       puts "LearnHissekiJob: finished job"
     end
@@ -21,6 +21,7 @@ class LearnHissekiJob < ApplicationJob
   # pythonライブラリのインポート
   def python_library_import
     pyimport :tensorflow, as: :tf
+    pyfrom :tensorflow, import: :keras
     pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
     pyimport :numpy, as: :np
 
@@ -38,7 +39,6 @@ class LearnHissekiJob < ApplicationJob
     datas = Hisseki.all
     hisseki_image_paths = datas.map { |hisseki| hisseki.image.current_path }
     hisseki_images = read_images(hisseki_image_paths)
-    hisseki_images.map! { |image| tf.cast(image, tf.float32) / 255.0 }
     hissekis = datas.map.with_index do |hisseki, i|
       {
         label: hisseki.user_id,
@@ -94,29 +94,98 @@ class LearnHissekiJob < ApplicationJob
     [matched_pairs, not_matched_pairs]
   end
 
-  # # image1とimage2をくっつける
-  # def stick_images(image1, image2)
-  #   tf.reshape(tf.concat([image1, image2], 0), [128, 256, 1])
-  # end
+  # ユーザー認証用のモデル
+  def certification_model
+    # 比較用画像のインプットレイヤー
+    comparison_image_input = keras.Input(
+      name: :comparison_image,
+      shape: [128, 128, 1]
+    )
+    # 認証の対象画像のインプットレイヤー
+    target_image_input = keras.Input(
+      name: :target_image,
+      shape: [128, 128, 1]
+    )
+
+    # 共通のレイヤー
+    image_features_list = [
+      layers.Conv2D.new(32, [5, 5], activation: :relu),
+      layers.MaxPooling2D.new([4, 4]),
+      layers.Conv2D.new(64, [5, 5], activation: :relu),
+      layers.MaxPooling2D.new([4, 4]),
+      layers.Conv2D.new(64, [3, 3], activation: :relu),
+      layers.Flatten.new
+    ]
+
+    user_classification_model = models.load_model("ml/hisseki_classification.tf")
+    user_classification_model = models.clone_model(user_classification_model)
+
+    user_classification_model.trainable = false
+    user_classification_model.pop()
+    user_classification_model.pop()
+    user_classification_model.summary
+    user_classification_model.compile()
+
+    comparison_image_features, target_image_features = nil
+
+    # image_features_list.each_with_index do |feature, i|
+    #   if i == 0
+    #     comparison_image_features = feature.(comparison_image_input)
+    #     target_image_features = feature.(target_image_input)
+    #     next
+    #   end
+    #
+    #   comparison_image_features = feature.(comparison_image_features)
+    #   target_image_features = feature.(target_image_features)
+    # end
+
+    comparison_image_features = user_classification_model.(comparison_image_input)
+    target_image_features = user_classification_model.(target_image_input)
+
+    x = layers.concatenate([comparison_image_features, target_image_features])
+
+    x = layers.Dense.new(64, activation: :relu).(x)
+
+
+    identification_pred = layers.Dense.new(2, activation: :softmax).(x)
+
+    model = keras.Model.new(
+      inputs: [comparison_image_input, target_image_input],
+      outputs: identification_pred
+    )
+
+    keras.utils.plot_model(model, "certification_model_plot.png", show_shapes: true)
+
+    model.compile(
+      optimizer: adam(learning_rate: 0.001),
+      loss: :sparse_categorical_crossentropy,
+      metrics: [:accuracy]
+    )
+    # exit
+    model
+  end
 
   # ユーザー分類用モデルを作る
   def make_classification_model(learn_datas)
     learn_images = np.array learn_datas.map { |data| data[:image] }
-    learn_labels = np.array learn_datas.map { |data| data[:label] }
+    # 学習に使うlabelはID-1
+    learn_labels = np.array learn_datas.map { |data| data[:label] -1 }
 
-    member_num = User.last.id + 1
+    member_num = User.last.id
 
     puts "LearnHissekiJob: start to make classification model"
     model = models.Sequential.new([
       layers.Conv2D.new(64, [5, 5], activation: :relu, input_shape: [128, 128, 1]),
       layers.MaxPooling2D.new([4, 4]),
-      layers.Conv2D.new(64, [5, 5], activation: :relu),
-      layers.MaxPooling2D.new([4, 4]),
-      layers.Conv2D.new(32, [5, 5], activation: :relu),
+      layers.Conv2D.new(128, [5, 5], activation: :relu),
+      layers.MaxPooling2D.new([2, 2]),
+      layers.Conv2D.new(128, [3, 3], activation: :relu),
       layers.Flatten.new,
-      layers.Dense.new(128, activation: :relu),
+      layers.Dense.new(32, activation: :relu),
       layers.Dense.new(member_num, activation: :softmax)
     ])
+
+    keras.utils.plot_model(model, "classification_model_plot.png", show_shapes: true)
 
     model.compile(
       optimizer: adam(learning_rate: 0.001),
@@ -124,7 +193,7 @@ class LearnHissekiJob < ApplicationJob
       metrics: [:accuracy]
     )
 
-    model.fit learn_images, learn_labels, epochs: 20, verbose: 0
+    model.fit learn_images, learn_labels, epochs: 10, verbose: 1
 
     puts "LearnHissekiJob: finish making classification model"
     model
@@ -138,41 +207,55 @@ class LearnHissekiJob < ApplicationJob
   def make_certification_model(learn_datas)
     matched_pairs, not_matched_pairs = make_pairs(learn_datas)
 
-    matched_pairs.map! { |pair| stick_images pair[0], pair[1] }.shuffle!
-    not_matched_pairs.map! { |pair| stick_images pair[0], pair[1] }.shuffle!
+    # matched_pairs.map! { |pair| stick_images pair[0], pair[1] }.shuffle!
+    # not_matched_pairs.map! { |pair| stick_images pair[0], pair[1] }.shuffle!
+
+    matched_pairs.shuffle!
+    not_matched_pairs.shuffle!
 
     train_datas = []
     [not_matched_pairs, matched_pairs].each_with_index do |pairs, i|
       train_datas += pairs.map do |image|
         {
           label: i,
-          image: image
+          comparison_image: image[0],
+          target_image: image[1]
         }
       end
     end
 
-    train_images = np.array train_datas.map { |data| data[:image] }
+    train_datas.shuffle!
+
+    train_comparison_images = np.array train_datas.map { |data| data[:comparison_image] }
+    train_target_images = np.array train_datas.map { |data| data[:target_image] }
     train_labels = np.array train_datas.map { |data| data[:label] }
 
     puts "LearnHissekiJob: start to make certification model"
-    model = models.Sequential.new([
-      layers.Conv2D.new(64, [5, 5], activation: :relu, input_shape: [128, 256, 1]),
-      layers.MaxPooling2D.new([4, 4]),
-      layers.Conv2D.new(64, [5, 5], activation: :relu),
-      layers.MaxPooling2D.new([4, 4]),
-      layers.Conv2D.new(32, [5, 5], activation: :relu),
-      layers.Flatten.new,
-      layers.Dense.new(128, activation: :relu),
-      layers.Dense.new(2, activation: :softmax)
-    ])
+    # model = models.Sequential.new([
+    #   layers.Conv2D.new(128, [5, 5], activation: :relu, input_shape: [128, 256, 1]),
+    #   layers.MaxPooling2D.new([4, 4]),
+    #   layers.Conv2D.new(256, [5, 5], activation: :relu),
+    #   layers.MaxPooling2D.new([4, 4]),
+    #   layers.Conv2D.new(256, [3, 3], activation: :relu),
+    #   layers.Flatten.new,
+    #   layers.Dense.new(64, activation: :relu),
+    #   layers.Dense.new(2, activation: :softmax)
+    # ])
 
-    model.compile(
-      optimizer: adam(learning_rate: 0.001),
-      loss: :sparse_categorical_crossentropy,
-      metrics: [:accuracy]
+    model = certification_model
+
+    # model.compile(
+    #   optimizer: adam(learning_rate: 0.001),
+    #   loss: :sparse_categorical_crossentropy,
+    #   metrics: [:accuracy]
+    # )
+
+    model.fit(
+      {comparison_image: train_comparison_images, target_image: train_target_images},# インプット
+      train_labels,# アウトプット
+      epochs: 10,
+      verbose: 1
     )
-
-    model.fit train_images, train_labels, epochs: 20, verbose: 0
     puts "LearnHissekiJob: finish making certification model"
 
     model

@@ -24,7 +24,7 @@ class ApplicationJob < ActiveJob::Base
   # 画像を読み込む
   def read_images(filenames)
     filenames.map do |filename|
-      tf.image.decode_image(tf.io.read_file(filename), channels: 1)
+      tf.cast(tf.reduce_sum(tf.image.decode_image(tf.io.read_file(filename), channels: 4), 2, keepdims: true), tf.float32) / 255.0
     end
   end
 
