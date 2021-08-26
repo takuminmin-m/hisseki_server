@@ -18,8 +18,14 @@ const Banner = {
 
 
   window.onload = ()=>{
-    enable_submit_button()
+    enable_submit_button();
 
+    document.getElementById("btn-extinction").onclick = function() {
+      function clear() {
+        context.clearRect(0, 0, board.width, board.height);
+      }
+      clear();
+    }
    board = document.querySelector("#board");
    context = board.getContext('2d');
 
@@ -135,6 +141,7 @@ console.log("touch");
     ctx.fillStyle = Banner.fontcolor;
     ctx.fillText(Banner.text, 10, 90, width);
   };
+
 
 document.onkeydown = function(){
   function clear() {

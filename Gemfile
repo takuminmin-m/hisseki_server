@@ -44,7 +44,7 @@ gem "pycall", github: "mrkn/pycall.rb"
 gem "sorcery"
 
 # バグ防止
-gem "concurrent-ruby", github: "ruby-concurrency/concurrent-ruby"
+gem "concurrent-ruby"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
