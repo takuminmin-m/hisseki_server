@@ -8,10 +8,6 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-
-     <%# gemをインストールした下を削除 %>
-     <link rel="stylesheet" href="/bootstrap.min.css" crossorigin="anonymous">
-     <script src="/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   </head>
 
   <body>
@@ -37,6 +33,8 @@
               <% else %>
                 <li class="nav-item active">
                   <%= link_to image_tag("signup.png", width: 103, height: 24), new_user_path %>
+                </li>
+                <li class="nav-item active">
                   <%= link_to image_tag("login.png", width: 76, height: 21), hissekis_path %>
                 </li>
               <% end %>
