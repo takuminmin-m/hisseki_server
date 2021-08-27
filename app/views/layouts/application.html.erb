@@ -8,30 +8,63 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+     <%# gemをインストールした下を削除 %>
+     <link rel="stylesheet" href="/bootstrap.min.css" crossorigin="anonymous">
+     <script src="/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   </head>
 
   <body>
-    <%= link_to "home", root_path %>
-    <%= link_to "learn(Don't push!!!!!!)", learn_path, method: :post %>
-    <% if logged_in? %>
-      <%= link_to "logout", logout_path, method: :delete %>
-      <%= link_to "hisseki_list", hissekis_path %>
-    <% else %>
-      <%= link_to "login", login_path, "data-turbolinks":false %>
-      <%= link_to "new user", new_user_path %>
-    <% end %>
-    <% if logged_in? %>
+    <header>
+      <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <div class="container">
+          <%= link_to image_tag("hisseki_logo.png", width: 120, height: 63), root_path, class: "navbar-brand" %>
+          <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav4" aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-collapse collapse" id="navbarNav4" style>
+            <ul class="navbar-nav">weeee
+              <li class="nav-item active">
+                <%= link_to image_tag("userlist.png", width: 96, height: 25), users_path %>
+              </li>
+              <% if logged_in? %>
+                <li class="nav-item active">
+                  <%= link_to image_tag("hissekilist.png", width: 76, height: 21), hissekis_path %>
+                </li>
+                <li class="nav-item active">
+                  <%= link_to image_tag("logout.png", width: 91, height: 20), logout_path, method: :delete %>
+                </li>
+              <% else %>
+                <li class="nav-item active">
+                  <%= link_to image_tag("signup.png", width: 103, height: 24), new_user_path %>
+                  <%= link_to image_tag("login.png", width: 76, height: 21), hissekis_path %>
+                </li>
+              <% end %>
+              <li class="nab-item active">
+                <%= link_to "learn", learn_path, method: :post %>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
     <br>
-      <div>
-        id: <%= current_user.id %>
-        <br>
-        name: <%= current_user.name %>
-        <br>
-        <%= link_to "delete this account", current_user, method: :delete, data: { confirm: "You sure?" } %>
+
+    <div class="container-md">
+      <div class="row">
+        <div class="border shadow m-3 mb-5 bg-light rounded-3">
+          <% if logged_in? %>
+            <div class="border-bottom">
+              現在のユーザー
+              <br>
+              ユーザーネーム: <%= current_user.name %>
+              <br>
+              ID: <%= current_user.id %>
+            </div>
+          <% end %>
+          <%= yield %>
+        </div>
       </div>
-    <% end %>
-    <p id="notice"><%= notice %></p>
-    <p id="alert" ><%= alert %></p>
-    <%= yield %>
+    </div>
   </body>
 </html>
