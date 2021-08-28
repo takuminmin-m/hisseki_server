@@ -1,26 +1,17 @@
-<h1>Hissekis</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Number</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @hissekis.each do |hisseki| %>
-      <tr>
-        <td><%= hisseki.id %></td>
-        <td><%= hisseki.user.name %></td>
-        <td><%= image_tag hisseki.image.url %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-
+<h1>登録された筆跡</h1>
 <br>
-<%= link_to "Send Hisseki", new_hisseki_path, "data-turbolinks": false %>
+<%= link_to "筆跡を登録", new_hisseki_path, "data-turbolinks": false, class: ["btn btn-primary"] %>
+
+<ul class="list-group">
+  <% @hissekis.each do |hisseki| %>
+  <li class="list-group-item d-flex text-left align-items-center">
+    <%= hisseki.id %>
+    <hr>
+    <div class="border-bottom border-start border-end border-top border-primary border-2">
+      <%= hisseki.user.name %>
+    </div>
+    <%= image_tag hisseki.image.url, class: "ms-auto" %>
+  </li>
+  <% end %>
+</ul>
 <br>
-<%= link_to "Hisseki list", hissekis_path %>

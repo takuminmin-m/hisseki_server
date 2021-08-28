@@ -19,23 +19,23 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="navbar-collapse collapse" id="navbarNav4" style>
-            <ul class="navbar-nav">weeee
+            <ul class="navbar-nav">
               <li class="nav-item active">
-                <%= link_to image_tag("userlist.png", width: 96, height: 25), users_path %>
+                <%= link_to image_tag("userlist.png", width: 96, height: 25), users_path, class: "nav-link" %>
               </li>
               <% if logged_in? %>
                 <li class="nav-item active">
-                  <%= link_to image_tag("hissekilist.png", width: 76, height: 21), hissekis_path %>
+                  <%= link_to image_tag("hissekilist.png", width: 76, height: 21), hissekis_path, class: "nav-link" %>
                 </li>
                 <li class="nav-item active">
-                  <%= link_to image_tag("logout.png", width: 91, height: 20), logout_path, method: :delete %>
+                  <%= link_to image_tag("logout.png", width: 91, height: 20), logout_path, method: :delete, class: "nav-link" %>
                 </li>
               <% else %>
                 <li class="nav-item active">
-                  <%= link_to image_tag("signup.png", width: 103, height: 24), new_user_path %>
+                  <%= link_to image_tag("signup.png", width: 103, height: 24), new_user_path, class: "nav-link" %>
                 </li>
                 <li class="nav-item active">
-                  <%= link_to image_tag("login.png", width: 76, height: 21), hissekis_path %>
+                  <%= link_to image_tag("login.png", width: 76, height: 21), hissekis_path, class: "nav-link" %>
                 </li>
               <% end %>
               <li class="nab-item active">
