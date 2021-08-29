@@ -1,6 +1,6 @@
 class HissekisController < ApplicationController
   before_action :set_hisseki, only: :destroy
-  before_action :require_login
+  before_action :require_login, except: [:learn]
 
   # GET /hissekis or /hissekis.json
   def index
@@ -36,7 +36,7 @@ class HissekisController < ApplicationController
 
   def learn
     LearnHissekiJob.perform_later
-    redirect_to hissekis_url
+    redirect_to root_url
   end
 
   # PATCH/PUT /hissekis/1 or /hissekis/1.json
