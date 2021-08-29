@@ -12,7 +12,7 @@ class UserSessionsController < ApplicationController
     unless user_name
       # js側でエラーメッセージを表示
       @json_return = {
-        message: "faild to certificate",
+        message: "認証に失敗しました",
         url: login_url
       }
       render json: @json_return

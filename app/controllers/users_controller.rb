@@ -12,7 +12,7 @@ class UsersController < ApplicationController
       auto_login(@user)
       redirect_back_or_to root_url, notice: "ユーザーの作成に成功しました"
     else
-      flash.now[:alert] = 'ユーザーの作成に失敗しました'
+      flash.now[:alert] = 'ユーザーの作成に失敗しました\nログアウトの前に筆跡を登録してください'
       render :new
     end
   end
