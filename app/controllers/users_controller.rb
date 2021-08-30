@@ -12,7 +12,7 @@ class UsersController < ApplicationController
       auto_login(@user)
       redirect_back_or_to new_hisseki_url, notice: "ユーザーの作成に成功しました\nまずはじめに、認証用の筆跡を登録しましょう"
     else
-      flash.now[:alert] = 'ユーザーの作成に失敗しました\nログアウトの前に筆跡を登録してください'
+      flash.now[:alert] = 'ユーザーの作成に失敗しました'
       render :new
     end
   end
