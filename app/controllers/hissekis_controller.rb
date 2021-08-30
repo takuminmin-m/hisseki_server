@@ -27,6 +27,7 @@ class HissekisController < ApplicationController
       if current_user.hissekis.count < 10
         {url: new_hisseki_url}
       else
+        LearnHissekiJob.perform_later if current_user.hissekis.count == 10
         {message: "筆跡は10枚以上登録されました", url: new_hisseki_url}
       end
     else
