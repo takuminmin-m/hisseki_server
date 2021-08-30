@@ -48,7 +48,7 @@ module ApplicationHelper
   # 引数のファイルをmarkdownにレンダリング
   # ファイル名はプロジェクトパス
   def markdown_file(file_path)
-    markdown_text = File.read(file_path)
+    markdown_text = File.read(Rails.root.join(file_path))
     markdown(markdown_text)
   end
 end
