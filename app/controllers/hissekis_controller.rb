@@ -24,7 +24,11 @@ class HissekisController < ApplicationController
 
     @json_return = if @hisseki.save
       # js側でリダイレクトさせる
-      {url: hissekis_url}
+      if current_user.hissekis.count < 10
+        {url: new_hisseki_url}
+      else
+        {message: "筆跡は10枚以上登録されました", url: new_hisseki_url}
+      end
     else
       # js側でエラーメッセージを表示
       {message: @hisseki.errors.map{ |error| error.full_message }.join("\n")}

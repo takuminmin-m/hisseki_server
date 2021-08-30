@@ -51,6 +51,12 @@
     <div class="container-md">
       <div class="row">
         <div class="border shadow m-3 mb-5 bg-light rounded-3">
+          <% if notice %>
+          <p class="notice"><%= notice %></p>
+          <% end %>
+          <% if alert %>
+          <p class="alert"><%= alert %></p>
+          <% end %>
           <% if logged_in? %>
             <div class="border-bottom">
               現在のユーザー
