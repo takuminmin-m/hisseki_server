@@ -1,24 +1,18 @@
-# README
+# 筆跡アプリ
+筆跡をパスワード代わりに使うアプリ
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 環境 動作確認済み
+ - Ubuntu 20.04 LTS
+ - Ruby 2.7.4
+ - Python 3.8
+ - TensorFlow 2.6.0
 
-Things you may want to cover:
+## 依存するツール
+ - ImageMagick
+ - TensorFlow
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## 構造
+### 筆跡認証
+RubyでTensorFlowをPyCallを介して使っています
+学習のジョブと認証のジョブがあり、それらのジョブではバグを避けるために新しいプロセスを作成しています
+学習のジョブは、10枚以上筆跡が登録されたら実行されます
