@@ -15,13 +15,15 @@ const Banner = {
   }
 }
 
-
+// 記入されているかを確認
+let empty_flag = true;
 
   window.onload = ()=>{
     enable_submit_button();
 
     document.getElementById("btn-extinction").onclick = function() {
       function clear() {
+        empty_flag = true;
         context.clearRect(0, 0, board.width, board.height);
       }
       clear();
@@ -69,6 +71,8 @@ context.lineTo(x, y);
     // これから新しい線を書き始めることを宣言する
     // 一連の線を書く処理が終了したらdragEnd関数内のclosePathで終了を宣言する
     context.beginPath();
+
+    empty_flag = false;
 
     isDrag = true;
   }
@@ -145,6 +149,7 @@ console.log("touch");
 
 document.onkeydown = function(){
   function clear() {
+    empty_flag = true;
       context.clearRect(0, 0, board.width, board.height);
     }
  console.log (event.keyCode)
@@ -158,6 +163,12 @@ document.onkeydown = function(){
 const enable_submit_button = () => {
   document.querySelector("#hisseki_form").addEventListener("submit", (e)=>{
     e.preventDefault();
+
+    if (empty_flag) {
+      alert("文字を入力されていません");
+      location.reload();
+      return;
+    }
 
     const form = new FormData(document.querySelector("#hisseki_form"))
     const png_data_uri = board.toDataURL();
