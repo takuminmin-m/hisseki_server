@@ -185,7 +185,7 @@ class LearnHissekiJob < ApplicationJob
       layers.Dense.new(member_num, activation: :softmax)
     ])
 
-    keras.utils.plot_model(model, "ml/classification_model_plot.png", show_shapes: true)
+    # keras.utils.plot_model(model, Rails.root.join("ml/classification_model_plot.png"), show_shapes: true)
 
     model.compile(
       optimizer: adam(learning_rate: 0.001),
