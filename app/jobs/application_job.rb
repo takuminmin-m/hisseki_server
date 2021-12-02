@@ -32,4 +32,13 @@ class ApplicationJob < ActiveJob::Base
   def stick_images(image1, image2)
     tf.reshape(tf.concat([image1, image2], 0), [128, 256, 1])
   end
+
+  def create_image_list
+    hissekis = Hisseki.all
+    CSV.open("#{Rails.root}hisseki_list.csv") do |csv|
+      hissekis.each do |hisseki|
+        csv << [hisseki.image.current_path, hisseki.user.to_i]
+      end
+    end
+  end
 end
