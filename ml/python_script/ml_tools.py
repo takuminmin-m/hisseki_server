@@ -32,3 +32,6 @@ def separate_2images_and_label(list):
     images2.append(list[i]["image2"])
     labels.append(list[i]["label"])
   return images1, images2, labels
+
+def test():
+    print(test)
