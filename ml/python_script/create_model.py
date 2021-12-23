@@ -9,7 +9,6 @@ import random
 import matplotlib.pyplot as plt
 import pathlib
 
-from ml_tools import *
 
 model_type = sys.argv[1]
 if model_type != "classification" && model_type != "certification":
@@ -17,7 +16,6 @@ if model_type != "classification" && model_type != "certification":
 
 RAILS_ROOT = str(pathlib.Path(__file__).resolve().parents[2])
 
-AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 def preprocess_image(image):
     image_4ch = tf.image.decode_image(image, channels=4, expand_animations=False)
@@ -54,17 +52,51 @@ def separate_2images_and_label(list):
         labels.append(list[i]["label"])
     return images1, images2, labels
 
-def classification_model():
+def conv_batchnorm_relu(x, filters, kernel_size):
     params = {
+        "filters": filters,
+        "kernel_size": kernel_size,
+        "strides": 1,
         "padding": "same",
         "use_bias": True,
-        "keras_initializer": "he_normal"
+        "kernel_initializer": "he_normal"
     }
 
-    model = keras.Sequential([
-        Layers.Conv2D
-    ])
-    return model
+    x = layers.Conv2D(**params)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.ReLU()(x)
+
+    return x
+
+def classification_model(input_shape, output_size):
+    inputs = layers.Input(input_shape)
+
+    x = conv_batchnorm_relu(inputs, 64, 3)
+    x = conv_batchnorm_relu(x, 64, 3)
+    x = layers.MaxPooling2D(2, padding="same")(x)
+    x = conv_batchnorm_relu(x, 128, 3)
+    x = conv_batchnorm_relu(x, 128, 3)
+    x = layers.MaxPooling2D(2, padding="same")(x)
+    x = conv_batchnorm_relu(x, 256, 3)
+    x = conv_batchnorm_relu(x, 256, 3)
+    x = conv_batchnorm_relu(x, 256, 3)
+    x = layers.MaxPooling2D(2, padding="same")(x)
+    x = conv_batchnorm_relu(x, 512, 3)
+    x = conv_batchnorm_relu(x, 512, 3)
+    x = conv_batchnorm_relu(x, 512, 3)
+    x = layers.MaxPooling2D(2, padding="same")(x)
+    x = conv_batchnorm_relu(x, 512, 3)
+    x = conv_batchnorm_relu(x, 512, 3)
+    x = conv_batchnorm_relu(x, 512, 3)
+    x = layers.MaxPooling2D(2, padding="same")(x)
+
+    x = layers.Flatten()(x)
+    x = layers.Dense(4096)(x)
+    x = layers.Dense(4096)(x)
+
+    outputs = layers.Dense(output_size, activation="softmax")(x)
+
+    return model.Model(inputs=inputs, outputs=outputs)
 
 def certification_model():
     pass
@@ -76,8 +108,9 @@ def make_model(images, labels):
         make_certification_model(images, labels)
 
 def make_classification_model(images, labels):
-    # make program
-    print("classification model")
+    input_shape = (128, 128, 1)
+    output_size = max(labels) + 1
+
     train_datas = []
     for i in range(len(images)):
         train_datas.append({
@@ -86,7 +119,7 @@ def make_classification_model(images, labels):
         })
 
     train_image, train_labels = separate_image_and_label(train_datas)
-    model = classification_model()
+    model = classification_model(input_shape, output_size)
 
 def make_certification_model(images, labels):
     print("certification model")
@@ -98,5 +131,5 @@ labels = []
 image_paths =
 labels =
 
-model = make_model(images, labels)
+model = make_model(images, labels, users_num)
 # model.save(RAILS_ROOT + "ml/" + )
