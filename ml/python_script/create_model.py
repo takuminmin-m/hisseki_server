@@ -54,12 +54,49 @@ def separate_2images_and_label(list):
         labels.append(list[i]["label"])
     return images1, images2, labels
 
-def test():
-    print(test)
+def classification_model():
+    params = {
+        "padding": "same",
+        "use_bias": True,
+        "keras_initializer": "he_normal"
+    }
 
+    model = keras.Sequential([
+        Layers.Conv2D
+    ])
+    return model
+
+def certification_model():
+    pass
+
+def make_model(images, labels):
+    if model_type == "classification":
+        make_classification_model(images, labels)
+    else:
+        make_certification_model(images, labels)
+
+def make_classification_model(images, labels):
+    # make program
+    print("classification model")
+    train_datas = []
+    for i in range(len(images)):
+        train_datas.append({
+            "image": images[i],
+            "label": labels[i]
+        })
+
+    train_image, train_labels = separate_image_and_label(train_datas)
+    model = classification_model()
+
+def make_certification_model(images, labels):
+    print("certification model")
 
 images = []
 labels = []
+
+# TODO: 筆跡のpathとラベルを取得
+image_paths =
+labels =
 
 model = make_model(images, labels)
 # model.save(RAILS_ROOT + "ml/" + )
