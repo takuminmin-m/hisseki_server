@@ -8,7 +8,7 @@ class CertificationHissekiJob < ApplicationJob
       reader.close
 
       python_library_import
-      user_classification_model = models.load_model("ml/hisseki_classification.tf")
+      user_classification_model = models.load_model("ml/hisseki_classification_py.tf")
       # user_certification_model = models.load_model("ml/hisseki_certification.tf")
       puts "CertificationHissekiJob: loaded models"
 

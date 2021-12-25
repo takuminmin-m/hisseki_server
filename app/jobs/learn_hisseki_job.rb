@@ -3,6 +3,7 @@ class LearnHissekiJob < ApplicationJob
 
   def perform
     generate_image_csv
+    system("python3 #{Rails.root.join("ml/python_script/create_model.py")} classification")
 
     # fork do
     #   python_library_import
