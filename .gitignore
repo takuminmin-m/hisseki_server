@@ -46,3 +46,4 @@ yarn-debug.log*
 /ml/hisseki_certification.tf
 /ml/hisseki_classification.tf
 /ml/python_script/__pycache__
+/ml/hisseki_list.csv
