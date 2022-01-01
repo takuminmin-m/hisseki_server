@@ -118,8 +118,54 @@ def classification_model(input_shape, output_size):
 
     return model
 
-def certification_model():
-    pass
+def certification_model(image_input_shape, output_size):
+    image1_input = keras.Input(shape=image_input_shape, name="image1")
+    image2_input = keras.Input(shape=image_input_shape, name="image2")
+    params = {
+        "activation": "relu",
+        "padding": "same"
+    }
+
+    shared_layers = keras.Sequential([
+        layers.Conv2D(64, (3, 3), **params),
+        layers.Conv2D(64, (3, 3), **params),
+        layers.MaxPooling2D((2, 2)),
+        layers.Conv2D(128, (3, 3), **params),
+        layers.Conv2D(128, (3, 3), **params),
+        layers.MaxPooling2D((2, 2)),
+        layers.Conv2D(256, (3, 3), **params),
+        layers.Conv2D(256, (3, 3), **params),
+        layers.Conv2D(256, (3, 3), **params),
+        layers.MaxPooling2D((2, 2)),
+        layers.Conv2D(512, (3, 3), **params),
+        layers.Conv2D(512, (3, 3), **params),
+        layers.Conv2D(512, (3, 3), **params),
+        layers.MaxPooling2D((2, 2)),
+        layers.Conv2D(512, (3, 3), **params),
+        layers.Conv2D(512, (3, 3), **params),
+        layers.Conv2D(512, (3, 3), **params),
+        layers.MaxPooling2D((2, 2)),
+        layers.Flatten()
+    ])
+
+    encoded_image1_input = shared_layers(image1_input)
+    encoded_image2_input = shared_layers(image2_input)
+
+    x = layers.concatenate([encoded_image1_input, encoded_image2_input])
+    x = layers.Dense(2048, activation="relu")(x)
+    x = layers.Dense(2048, activation="relu")(x)
+    x = layers.Dense(2048, activation="relu")(x)
+    certification_pred = layers.Dense(output_size, activation="softmax")(x)
+
+    model = models.Model(
+        inputs=[image1_input, image2_input],
+        outputs=[certification_pred]
+    )
+
+    model.summary()
+    keras.utils.plot_model(model, RAILS_ROOT + "/ml/certification_model_plot.png", show_shapes=True)
+
+    return model
 
 def make_model(images, labels):
     if model_type == "classification":
@@ -160,11 +206,58 @@ def make_classification_model(images, labels):
     model.save(RAILS_ROOT + "/ml/hisseki_classification.tf")
 
 def make_certification_model(images, labels):
-    print("certification model")
+    image_input_shape = (128, 128, 1)
+    labels = list(map(int, labels))
+    output_size = 2
+
+    datas = []
+    for i in range(len(images)):
+        for j in range(len(images)):
+            if labels[i] == labels[j]:
+                datas.append({
+                    "image1": images[i],
+                    "image2": images[j],
+                    "label": 1
+                })
+            else:
+                datas.append({
+                    "image1": images[i],
+                    "image2": images[j],
+                    "label": 0
+                })
+
+    random.shuffle(datas)
+    # train_datas, validation_datas = split(datas, 0.1)
+    train_datas = datas
+    train_images1, train_images2, train_labels = separate_2images_and_label(train_datas)
+    # validation_images1, validation_images2, validation_labels = separate_2images_and_label(validation_datas)
+
+    train_images1 = np.array(train_images1)
+    train_images2 = np.array(train_images2)
+    train_labels = np.array(train_labels)
+    # validation_images1 = np.array(validation_images1)
+    # validation_images2 = np.array(validation_images2)
+    # validation_labels = np.array(validation_labels)
+
+    model = certification_model(image_input_shape, output_size)
+    model.compile(
+        optimizer=optimizers.Adam(learning_rate=1e-4),
+        loss=losses.SparseCategoricalCrossentropy(),
+        metrics=["accuracy"]
+    )
+
+    model.fit(
+        {"image1": train_images1, "image2": train_images2},
+        train_labels,
+        epochs=20,
+        # validation_data=[{"image1": validation_images1, "image2": validation_images2}, validation_labels]
+    )
+    model.save(RAILS_ROOT + "/ml/hisseki_certification.tf")
 
 
 labels, image_paths = read_csv(RAILS_ROOT + "/ml/hisseki_list.csv")
 images = list(map(load_and_preprocess_image, image_paths))
 
 model = make_model(images, labels)
-# model.save(RAILS_ROOT + "ml/" + )
+
+print("done")
