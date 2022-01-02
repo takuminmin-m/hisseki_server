@@ -227,17 +227,17 @@ def make_certification_model(images, labels):
                 })
 
     random.shuffle(datas)
-    # train_datas, validation_datas = split(datas, 0.1)
+    train_datas, validation_datas = split(datas, 0.1)
     train_datas = datas
     train_images1, train_images2, train_labels = separate_2images_and_label(train_datas)
-    # validation_images1, validation_images2, validation_labels = separate_2images_and_label(validation_datas)
+    validation_images1, validation_images2, validation_labels = separate_2images_and_label(validation_datas)
 
     train_images1 = np.array(train_images1)
     train_images2 = np.array(train_images2)
     train_labels = np.array(train_labels)
-    # validation_images1 = np.array(validation_images1)
-    # validation_images2 = np.array(validation_images2)
-    # validation_labels = np.array(validation_labels)
+    validation_images1 = np.array(validation_images1)
+    validation_images2 = np.array(validation_images2)
+    validation_labels = np.array(validation_labels)
 
     model = certification_model(image_input_shape, output_size)
     model.compile(
@@ -250,7 +250,7 @@ def make_certification_model(images, labels):
         {"image1": train_images1, "image2": train_images2},
         train_labels,
         epochs=20,
-        # validation_data=[{"image1": validation_images1, "image2": validation_images2}, validation_labels]
+        validation_data=({"image1": validation_images1, "image2": validation_images2}, validation_labels)
     )
     model.save(RAILS_ROOT + "/ml/hisseki_certification.tf")
 
