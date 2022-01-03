@@ -21,6 +21,17 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
+  def python_library_import
+    pyimport :tensorflow, as: :tf
+    pyfrom :tensorflow, import: :keras
+    pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
+    pyimport :numpy, as: :np
+
+    pyfrom Rails.root.join("ml/python_script/functions"), import: "*"
+
+    puts "PyCall info: imported python libraries"
+  end
+
   # 画像を読み込む
   def read_images(filenames)
     filenames.map do |filename|
@@ -31,5 +42,15 @@ class ApplicationJob < ActiveJob::Base
   # image1とimage2をくっつける
   def stick_images(image1, image2)
     tf.reshape(tf.concat([image1, image2], 0), [128, 256, 1])
+  end
+
+  def generate_image_csv
+    all_hissekis = Hisseki.all
+
+    CSV.open("ml/hisseki_list.csv", "w") do |list|
+      all_hissekis.each do |hisseki|
+        list << [hisseki.user_id, hisseki.image.current_path]
+      end
+    end
   end
 end
