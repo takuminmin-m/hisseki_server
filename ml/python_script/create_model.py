@@ -90,26 +90,26 @@ def certification_model(image_input_shape, output_size):
         layers.Conv2D(64, (3, 3), **params),
         layers.Conv2D(64, (3, 3), **params),
         layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.2),
+        # layers.Dropout(0.2),
         layers.Conv2D(128, (3, 3), **params),
         layers.Conv2D(128, (3, 3), **params),
+        # layers.Dropout(0.2),
         layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.2),
         layers.Conv2D(256, (3, 3), **params),
         layers.Conv2D(256, (3, 3), **params),
         layers.Conv2D(256, (3, 3), **params),
         layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.2),
+        # layers.Dropout(0.2),
         layers.Conv2D(512, (3, 3), **params),
         layers.Conv2D(512, (3, 3), **params),
         layers.Conv2D(512, (3, 3), **params),
         layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.2),
+        # layers.Dropout(0.2),
         layers.Conv2D(512, (3, 3), **params),
         layers.Conv2D(512, (3, 3), **params),
         layers.Conv2D(512, (3, 3), **params),
         layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.2),
+        # layers.Dropout(0.2),
         layers.Flatten()
     ])
 
@@ -117,6 +117,9 @@ def certification_model(image_input_shape, output_size):
     encoded_image2_input = shared_layers(image2_input)
 
     x = layers.concatenate([encoded_image1_input, encoded_image2_input])
+    x = layers.Dense(4096, activation="relu")(x)
+    x = layers.Dense(4096, activation="relu")(x)
+    x = layers.Dense(4096, activation="relu")(x)
     x = layers.Dense(2048, activation="relu")(x)
     x = layers.Dense(2048, activation="relu")(x)
     x = layers.Dense(2048, activation="relu")(x)
