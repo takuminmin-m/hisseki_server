@@ -33,13 +33,13 @@ class CertificationHissekiJob < ApplicationJob
       comparison_images = np.array(comparison_images, dtype: :float32)
       certification_data = [comparison_images, target_images]
 
-      certification_predictions = certification_model.predict(
+      auth_predictions = certification_model.predict(
         certification_data
       )
       puts "CertificationHissekiJob: check whether is the person"
-      puts certification_data
+      puts auth_predictions
 
-      return_value = if np.argmax(certification_predictions[0]) == 1
+      return_value = if np.argmax(auth_predictions[0]) == 1
         comparison_user.id.to_s
       else
         "nil"
