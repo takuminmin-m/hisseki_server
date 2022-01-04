@@ -8,42 +8,46 @@ class CertificationHissekiJob < ApplicationJob
       reader.close
 
       python_library_import
-      user_classification_model = models.load_model("ml/hisseki_classification.tf")
-      # user_certification_model = models.load_model("ml/hisseki_certification.tf")
+      classification_model = models.load_model(Rails.root.join("ml/hisseki_classification.tf").to_s)
+      certification_model = models.load_model(Rails.root.join("ml/hisseki_certification.tf").to_s)
       puts "CertificationHissekiJob: loaded models"
 
       target_images = read_images [hisseki_path]
-      target_images = np.array target_images
-      classification_predictions = user_classification_model.predict target_images
+      target_images = np.array(target_images)
+      classification_predictions = classification_model.predict target_images
       p classification_predictions
       puts "CertificationHissekiJob: predicted user"
-      certification_bool = np.amin(classification_predictions[0]) < 1.0e-2
+      certification_bool = np.amax(classification_predictions[0]) > 1.0e-1
 
-      if numpy_to_logical certification_bool
-        p "do true"
-        return_value = "#{np.argmax(classification_predictions[0]) + 1}"
-      else
-        return_value = "nil"
+      unless numpy_to_logical certification_bool
+        puts "certification failed"
+        writer.write "nil"
+        exit
       end
 
-      # target_user = User.find(np.argmax(classification_predictions[0]) + 1)
-      # target_user_hissekis = target_user.hissekis
-      # target_user_images = target_user_hissekis.map { |hisseki| hisseki.image.current_path }
-      # comparison_images = read_images [target_user_images[rand(target_user_images.length)]]
-      # comparison_images = np.array comparison_images
-      #
-      # certification_predictions = user_certification_model.predict(
-      #   *{comparison_image: comparison_images, target_image: target_images}
-      # )
-      # puts "CertificationHissekiJob: check whether is the person"
-      #
-      # return_value = if np.argmax(certification_predictions[0]) == 1
-      #   "#{target_user.id}"
-      # else
-      #   "nil"
-      # end
 
+      comparison_user = User.find(np.argmax(classification_predictions[0]))
+      comparison_user_hissekis = comparison_user.hissekis
+      comparison_user_images = comparison_user_hissekis.map { |hisseki| hisseki.image.current_path }
+      comparison_images = read_images [comparison_user_images[rand(comparison_user_images.length)]]
+      comparison_images = np.array(comparison_images, dtype: :float32)
+      certification_data = [comparison_images, target_images]
+
+      auth_predictions = certification_model.predict(
+        certification_data
+      )
+      puts "CertificationHissekiJob: check whether is the person"
+      puts auth_predictions
+
+      return_value = if np.argmax(auth_predictions[0]) == 1
+        comparison_user.id.to_s
+      else
+        "nil"
+      end
+
+      puts "certification finished successfully"
       writer.write return_value
+      exit
     end
 
     writer.close
@@ -56,14 +60,6 @@ class CertificationHissekiJob < ApplicationJob
   end
 
   private
-
-  # pythonライブラリのインポート
-  def python_library_import
-    pyimport :tensorflow, as: :tf
-    pyfrom "tensorflow.keras", import: [:datasets, :layers, :models, :optimizers]
-    pyimport :numpy, as: :np
-    puts "PyCall info: imported python libraries"
-  end
 
   def numpy_to_logical(boolean)
     boolean.to_s == "True"
