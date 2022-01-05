@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers, models, optimizers, losses, regularizers
+from tensorflow.keras import layers, models, optimizers, losses, regularizers, callbacks
 
 import os
 import sys
@@ -43,26 +43,26 @@ def classification_model(input_shape, output_size):
     x = conv_batchnorm_relu(inputs, 64, 3)
     x = conv_batchnorm_relu(x, 64, 3)
     x = layers.MaxPooling2D(2, padding="same")(x)
-    x = layers.Dropout(0.2)(X)
+    x = layers.Dropout(0.2)(x)
     x = conv_batchnorm_relu(x, 128, 3)
     x = conv_batchnorm_relu(x, 128, 3)
     x = layers.MaxPooling2D(2, padding="same")(x)
-    x = layers.Dropout(0.2)(X)
+    x = layers.Dropout(0.2)(x)
     x = conv_batchnorm_relu(x, 256, 3)
     x = conv_batchnorm_relu(x, 256, 3)
     x = conv_batchnorm_relu(x, 256, 3)
     x = layers.MaxPooling2D(2, padding="same")(x)
-    x = layers.Dropout(0.2)(X)
+    x = layers.Dropout(0.2)(x)
     x = conv_batchnorm_relu(x, 512, 3)
     x = conv_batchnorm_relu(x, 512, 3)
     x = conv_batchnorm_relu(x, 512, 3)
     x = layers.MaxPooling2D(2, padding="same")(x)
-    x = layers.Dropout(0.2)(X)
+    x = layers.Dropout(0.2)(x)
     x = conv_batchnorm_relu(x, 512, 3)
     x = conv_batchnorm_relu(x, 512, 3)
     x = conv_batchnorm_relu(x, 512, 3)
     x = layers.MaxPooling2D(2, padding="same")(x)
-    x = layers.Dropout(0.2)(X)
+    x = layers.Dropout(0.2)(x)
 
     x = layers.Flatten()(x)
     x = layers.Dense(2048)(x)
@@ -213,12 +213,19 @@ def make_certification_model(images, labels):
         loss=losses.SparseCategoricalCrossentropy(),
         metrics=["accuracy"]
     )
+    early_stopping = callbacks.EarlyStopping(
+        monitor="val_loss",
+        min_delta=1.0e-8,
+        patience=5,
+        mode="min"
+    )
 
     model.fit(
         {"image1": train_images1, "image2": train_images2},
         train_labels,
-        epochs=10,
-        validation_data=({"image1": validation_images1, "image2": validation_images2}, validation_labels)
+        epochs=50,
+        validation_data=({"image1": validation_images1, "image2": validation_images2}, validation_labels),
+        callbacks=[early_stopping]
     )
     model.save(RAILS_ROOT + "/ml/hisseki_certification.tf")
 
