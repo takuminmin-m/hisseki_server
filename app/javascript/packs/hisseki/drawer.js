@@ -196,7 +196,9 @@ const enable_submit_button = () => {
 
     const form = new FormData(document.querySelector("#hisseki_form"))
     const png_data_uri = board.toDataURL();
+    const writing_behavior = JSON.stringify(blackPixelList);
     form.append("image_data_uri", png_data_uri);
+    form.append("writing_behavior", writing_behavior);
 
     const data = {
       method: "POST",
@@ -240,7 +242,7 @@ const log_setup = () => {
     blackPixelList.push(pick());
   }
   // counttimerはタイマーというオブジェクト、モノ
-  var counttimer = window.setInterval(countBlackPixel, 500); // 0.5秒ごとにcountBlackPixelを実行
+  var counttimer = window.setInterval(countBlackPixel, 100);
 
   window.setTimeout(function() {
     window.clearInterval(counttimer); // さっき代入したタイマーを停止
