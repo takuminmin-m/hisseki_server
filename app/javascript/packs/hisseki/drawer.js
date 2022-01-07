@@ -242,7 +242,7 @@ const log_setup = () => {
     blackPixelList.push(pick());
   }
   // counttimerはタイマーというオブジェクト、モノ
-  var counttimer = window.setInterval(countBlackPixel, 100);
+  var counttimer = window.setInterval(countBlackPixel, 10);
 
   window.setTimeout(function() {
     window.clearInterval(counttimer); // さっき代入したタイマーを停止
