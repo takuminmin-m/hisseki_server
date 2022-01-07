@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   private
 
   def hisseki_params
-    params.permit(:image_data_uri)
+    params.permit(:image_data_uri, :writing_behavior)
   end
 
   protected
