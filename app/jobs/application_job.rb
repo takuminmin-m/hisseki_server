@@ -50,7 +50,8 @@ class ApplicationJob < ActiveJob::Base
 
     CSV.open("ml/hisseki_list.csv", "w") do |list|
       all_hissekis.each do |hisseki|
-        list << [hisseki.user_id, hisseki.image.current_path]
+        writing_behavior = hisseki.writing_behavior.delete("[]").split(",")
+        list << [hisseki.user_id, hisseki.image.current_path, *writing_behavior]
       end
     end
   end
