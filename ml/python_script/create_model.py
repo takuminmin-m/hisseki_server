@@ -230,8 +230,9 @@ def make_certification_model(images, labels):
     model.save(RAILS_ROOT + "/ml/hisseki_certification.tf")
 
 
-labels, image_paths = read_csv(RAILS_ROOT + "/ml/hisseki_list.csv")
+labels, image_paths, writing_behaviors = read_csv(RAILS_ROOT + "/ml/hisseki_list.csv")
 images = list(map(load_and_preprocess_image, image_paths))
+writing_behaviors = list(map(preprocess_writing_behavior, writing_behaviors))
 
 model = make_model(images, labels)
 

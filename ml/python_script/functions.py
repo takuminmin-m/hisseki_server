@@ -13,6 +13,7 @@ import csv
 def read_csv(filename):
     user_id = []
     image_paths = []
+    writing_behaviors = []
 
     with open(filename) as f:
         reader = csv.reader(f)
@@ -20,8 +21,9 @@ def read_csv(filename):
         for row in reader:
             user_id.append(row[0])
             image_paths.append(row[1])
+            writing_behaviors.append(list(map(int, row[2:])))
 
-    return user_id, image_paths
+    return user_id, image_paths, writing_behaviors
 
 def preprocess_image(image):
     image_4ch = tf.image.decode_image(image, channels=4, expand_animations=False)
@@ -34,6 +36,19 @@ def preprocess_image(image):
 def load_and_preprocess_image(path):
     image = tf.io.read_file(path)
     return preprocess_image(image)
+
+def preprocess_writing_behavior(writing_behavior):
+    previous_num = 0
+    result_writing_behavior = []
+
+    for n in writing_behavior:
+        result_writing_behavior.append(n - previous_num)
+        previous_num = n
+
+    result_writing_behavior = np.array(result_writing_behavior)
+    result_writing_behavior = result_writing_behavior / 50
+    
+    return result_writing_behavior
 
 def split(list, slice_ratio):
     slice_index = int(len(list) * slice_ratio)
