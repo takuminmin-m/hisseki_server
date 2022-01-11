@@ -37,10 +37,11 @@ def conv_batchnorm_relu(x, filters, kernel_size):
 
     return x
 
-def classification_model(input_shape, output_size):
-    inputs = layers.Input(input_shape)
+def classification_model(image_input_shape, behavior_input_shape, output_size):
+    image_inputs = layers.Input(image_input_shape, name="image")
+    behavior_inputs = layers.Input(shape=behavior_input_shape, dtype=tf.float32, ragged=True, name="behavior")
 
-    x = conv_batchnorm_relu(inputs, 64, 3)
+    x = conv_batchnorm_relu(image_inputs, 64, 3)
     x = conv_batchnorm_relu(x, 64, 3)
     x = layers.MaxPooling2D(2, padding="same")(x)
     x = layers.Dropout(0.2)(x)
@@ -63,15 +64,23 @@ def classification_model(input_shape, output_size):
     x = conv_batchnorm_relu(x, 512, 3)
     x = layers.MaxPooling2D(2, padding="same")(x)
     x = layers.Dropout(0.2)(x)
-
     x = layers.Flatten()(x)
+
+    behavior_layers = models.Sequential([
+        layers.GRU(20, activation="tanh"),
+        layers.Dense(128, activation="relu"),
+    ])
+
+    encoded_behavior_input = behavior_layers(behavior_inputs)
+
+    x = layers.concatenate([x, encoded_behavior_input])
     x = layers.Dense(2048)(x)
     x = layers.Dense(2048)(x)
     x = layers.Dense(1024)(x)
     x = layers.Dense(1024)(x)
 
     outputs = layers.Dense(output_size, activation="softmax")(x)
-    model = models.Model(inputs=inputs, outputs=outputs)
+    model = models.Model(inputs=(image_inputs, behavior_inputs), outputs=outputs)
 
     model.summary()
     keras.utils.plot_model(model, RAILS_ROOT + "/ml/classification_model_plot.png", show_shapes=True)
@@ -135,14 +144,15 @@ def certification_model(image_input_shape, output_size):
 
     return model
 
-def make_model(images, labels):
+def make_model(images, writing_behaviors, labels):
     if model_type == "classification":
-        make_classification_model(images, labels)
+        make_classification_model(images, writing_behaviors, labels)
     else:
-        make_certification_model(images, labels)
+        make_certification_model(images, writing_behaviors, labels)
 
-def make_classification_model(images, labels):
-    input_shape = (128, 128, 1)
+def make_classification_model(images, writing_behaviors, labels):
+    image_input_shape = (128, 128, 1)
+    behavior_input_shape = (None, 1)
     labels = list(map(int, labels))
     output_size = max(labels) + 1
 
@@ -150,27 +160,44 @@ def make_classification_model(images, labels):
     for i in range(len(images)):
         datas.append({
             "image": images[i],
+            "behavior": writing_behaviors[i],
             "label": labels[i]
         })
 
+
     random.shuffle(datas)
     train_datas, validation_datas = split(datas, 0.1)
-    train_images, train_labels = separate_image_and_label(train_datas)
-    validation_images, validation_labels = separate_image_and_label(validation_datas)
+    train_images, train_behaviors, train_labels = separate_image_and_behaviors_and_label(train_datas)
+    validation_images, validation_behaviors, validation_labels = separate_image_and_behaviors_and_label(validation_datas)
 
     train_images = np.array(train_images)
     train_labels = np.array(train_labels)
+    train_behaviors = np.array(train_behaviors)
     validation_images = np.array(validation_images)
     validation_labels = np.array(validation_labels)
+    validation_behaviors = np.array(validation_behaviors)
 
-    model = classification_model(input_shape, output_size)
+    train_images = tf.convert_to_tensor(train_images)
+    train_labels = tf.convert_to_tensor(train_labels)
+    train_behaviors = tf.ragged.constant(train_behaviors)
+    validation_images = tf.convert_to_tensor(validation_images)
+    validation_labels = tf.convert_to_tensor(validation_labels)
+    validation_behaviors = tf.ragged.constant(validation_behaviors)
+
+
+    model = classification_model(image_input_shape, behavior_input_shape, output_size)
     model.compile(
         optimizer=optimizers.Adam(learning_rate=1e-4),
         loss=losses.SparseCategoricalCrossentropy(),
         metrics=["accuracy"]
     )
 
-    model.fit(train_images, train_labels, epochs=50, validation_data=(validation_images, validation_labels))
+    model.fit(
+        {"image": train_images, "behavior": train_behaviors},
+        train_labels,
+        epochs=50,
+        validation_data=({"image": validation_images, "behavior": validation_behaviors}, validation_labels)
+    )
     model.save(RAILS_ROOT + "/ml/hisseki_classification.tf")
 
 def make_certification_model(images, labels):
@@ -231,9 +258,15 @@ def make_certification_model(images, labels):
 
 
 labels, image_paths, writing_behaviors = read_csv(RAILS_ROOT + "/ml/hisseki_list.csv")
+for value in writing_behaviors:
+    print(len(value))
+
 images = list(map(load_and_preprocess_image, image_paths))
 writing_behaviors = list(map(preprocess_writing_behavior, writing_behaviors))
 
-model = make_model(images, labels)
+# images = np.array(images)
+writing_behaviors = np.array(writing_behaviors)
+
+model = make_model(images, writing_behaviors, labels)
 
 print("create_model.py: done")

@@ -47,20 +47,23 @@ def preprocess_writing_behavior(writing_behavior):
 
     result_writing_behavior = np.array(result_writing_behavior)
     result_writing_behavior = result_writing_behavior / 50
-    
+    result_writing_behavior = np.reshape(result_writing_behavior, (len(result_writing_behavior), 1))
+
     return result_writing_behavior
 
 def split(list, slice_ratio):
-    slice_index = int(len(list) * slice_ratio)
+    slice_index = int(len(list) * (1-slice_ratio))
     return list[:slice_index], list[slice_index:]
 
-def separate_image_and_label(list):
+def separate_image_and_behaviors_and_label(list):
     images = []
     labels = []
+    behaviors = []
     for i in range(len(list)):
         images.append(list[i]["image"])
         labels.append(list[i]["label"])
-    return images, labels
+        behaviors.append(list[i]["behavior"])
+    return images, behaviors,labels
 
 def separate_2images_and_label(list):
     images1 = []
