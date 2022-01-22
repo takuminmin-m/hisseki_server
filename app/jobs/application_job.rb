@@ -29,7 +29,7 @@ class ApplicationJob < ActiveJob::Base
     pyimport :sys
 
     sys.path.append(Rails.root.join("ml/python_script/").to_s)
-    pyfrom "functions", import: :load_and_preprocess_image
+    pyfrom "functions", import: [:load_and_preprocess_image, :preprocess_writing_behavior]
 
     puts "PyCall info: imported python libraries"
   end

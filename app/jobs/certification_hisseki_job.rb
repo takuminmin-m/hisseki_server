@@ -1,7 +1,7 @@
 class CertificationHissekiJob < ApplicationJob
   queue_as :default
 
-  def perform(hisseki_path)
+  def perform(hisseki)
     reader, writer = IO.pipe
 
     main_pid = fork do
@@ -12,9 +12,14 @@ class CertificationHissekiJob < ApplicationJob
       certification_model = models.load_model(Rails.root.join("ml/hisseki_certification.tf").to_s)
       puts "CertificationHissekiJob: loaded models"
 
-      target_images = read_images [hisseki_path]
-      target_images = np.array(target_images)
-      classification_predictions = classification_model.predict target_images
+      target_image = read_images([hisseki.image.current_path])[0]
+      target_images = tf.convert_to_tensor([target_image])
+      target_behavior = JSON.parse(hisseki.writing_behavior).to_a
+      target_behavior = preprocess_writing_behavior(target_behavior)
+      target_behaviors = tf.convert_to_tensor([target_behavior])
+
+      classification_predictions = classification_model.predict [target_images, target_behaviors]
+
       p classification_predictions
       puts "CertificationHissekiJob: predicted user"
       certification_bool = np.amax(classification_predictions[0]) > 1.0e-1
@@ -28,7 +33,7 @@ class CertificationHissekiJob < ApplicationJob
 
       comparison_user = User.find(np.argmax(classification_predictions[0]))
       comparison_user_hissekis = comparison_user.hissekis
-      comparison_user_images = comparison_user_hissekis.map { |hisseki| hisseki.image.current_path }
+      comparison_user_images = comparison_user_hissekis.map { _1.image.current_path }
       comparison_images = read_images [comparison_user_images[rand(comparison_user_images.length)]]
       comparison_images = np.array(comparison_images, dtype: :float32)
       certification_data = [comparison_images, target_images]
