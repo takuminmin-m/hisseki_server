@@ -5,9 +5,11 @@ class UserSessionsController < ApplicationController
 
   def create
     @hisseki = Hisseki.new(hisseki_params)
-    user_name = CertificationHissekiJob.perform_now(@hisseki.image.current_path)&.name
+    user_name = CertificationHissekiJob.perform_now(@hisseki)&.name
 
     p user_name
+
+    p @hisseki.errors
 
     unless user_name
       # js側でエラーメッセージを表示
