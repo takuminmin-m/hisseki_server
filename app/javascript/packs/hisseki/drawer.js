@@ -188,6 +188,9 @@ const enable_submit_button = () => {
   document.querySelector("#hisseki_form").addEventListener("submit", (e) => {
     e.preventDefault();
 
+    const loading_animation = document.querySelector("#submit_loading");
+    loading_animation.hidden = false;
+
     if (empty_flag) {
       alert("文字が入力されていません");
       location.reload();
@@ -208,6 +211,7 @@ const enable_submit_button = () => {
     fetch(url4send, data)
       .then(response => response.json())
       .then(data => {
+        loading_animation.hidden = true;
         if (data["message"]) {
           alert(data["message"]);
         }
