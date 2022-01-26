@@ -1,6 +1,15 @@
 <h1>ユーザーリスト</h1>
 <hr>
 <ul class="list-group">
+  <li class="list-group-item d-flex text-left align-items-center border-bottom border-2">
+    ユーザーID
+    <div class="border-bottom border-start border-end border-top border-primary border-2">
+      ユーザーネーム
+    </div>
+    <span class="ms-auto badge bg-primary rounded-pill">
+      認証可能/投稿済み
+    </span>
+  </li>
   <% @users.each do |user| %>
     <li class="list-group-item d-flex text-left align-items-center">
       <%= user.id %>
@@ -9,7 +18,8 @@
         <%= user.name %>
       </div>
       <span class="ms-auto badge bg-primary rounded-pill">
-        <%= user.hissekis.count %>
+        <%= user.hissekis.where("updated_at < ?", @model_date).size %>/
+        <%= user.hissekis.size %>
       </span>
     </li>
   <% end %>
