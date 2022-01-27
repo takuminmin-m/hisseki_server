@@ -18,9 +18,7 @@ class UsersController < ApplicationController
   end
 
   def index
-    File.open(Rails.root.join("ml/hisseki_list.csv"), "r") do |f|
-      @model_date = f.atime
-    end
+    @model_date = model_date
     @users = User.all
   end
 

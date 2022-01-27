@@ -6,6 +6,12 @@ class ApplicationController < ActionController::Base
     params.permit(:image_data_uri, :writing_behavior)
   end
 
+  def model_date
+    File.open(Rails.root.join("ml/hisseki_list.csv"), "r") do |f|
+      return f.atime
+    end
+  end
+
   protected
 
   def not_authenticated
