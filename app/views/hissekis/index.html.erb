@@ -1,11 +1,18 @@
 <h1>登録された筆跡</h1>
+<p><span class="text-danger">赤字</span>はまだ学習されていない筆跡です</p>
 <br>
 <%= link_to "筆跡を登録", new_hisseki_path, "data-turbolinks": false, class: ["btn btn-primary"] %>
 
 <ul class="list-group">
   <% @hissekis.each do |hisseki| %>
   <li class="list-group-item d-flex text-left align-items-center">
-    <%= hisseki.id %>
+    <% if hisseki.updated_at > @model_date %>
+      <div class="text-danger">
+        <%= hisseki.id %>
+      </div>
+    <% else %>
+      <%= hisseki.id %>
+    <% end %>
     <hr>
     <div class="border-bottom border-start border-end border-top border-primary border-2">
       <%= hisseki.user.name %>

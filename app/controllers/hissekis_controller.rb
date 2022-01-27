@@ -4,6 +4,7 @@ class HissekisController < ApplicationController
 
   # GET /hissekis or /hissekis.json
   def index
+    @model_date = model_date
     @hissekis = Hisseki.all
   end
 
