@@ -18,6 +18,7 @@ class UsersController < ApplicationController
   end
 
   def index
+    @model_date = model_date
     @users = User.all
   end
 

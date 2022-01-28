@@ -19,5 +19,9 @@
   <div class="actions">
     <button class="btn btn-warning" type="button" id="btn-extinction">削除</button>
     <%= form.submit button_message, class: ["btn", "btn-primary"] %>
+    <div class="loader" height="40" id="submit_loading" hidden="true">
+      Loading...
+    </div>
   </div>
+
 <% end %>
