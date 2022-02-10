@@ -2,18 +2,15 @@
   "name": "hisseki-server",
   "private": true,
   "dependencies": {
-    "@popperjs/core": "^2.9.3",
-    "@rails/actioncable": "^7.0.0",
-    "@rails/activestorage": "^7.0.0",
-    "@rails/ujs": "^7.0.0",
-    "@rails/webpacker": "5.4.0",
-    "bootstrap": "^5.0.0-beta3",
-    "turbolinks": "^5.2.0",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12"
+    "@popperjs/core": "^2.11.2",
+    "bootstrap": "^5.1.3",
+    "sass": "^1.49.7"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "webpack-dev-server": "^4.0.0"
+    "webpack-dev-server": "^4.7.4"
+  },
+  "scripts": {
+    "build:css": "sass ./app/assets/stylesheets/application.bootstrap.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
   }
 }
