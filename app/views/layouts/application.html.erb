@@ -31,14 +31,16 @@
                   <%= link_to image_tag("hissekilist.png", width: 76, height: 21), hissekis_path, class: "nav-link" %>
                 </li>
                 <li class="nav-item active">
-                  <%= link_to image_tag("logout.png", width: 91, height: 20), logout_path, method: :delete, class: "nav-link" %>
+                  <%= button_to logout_path, method: :delete, class: "nav-link" do %>
+                    <%= image_tag "logout.png", width:91, height:20 %>
+                  <% end %>
                 </li>
               <% else %>
                 <li class="nav-item active">
                   <%= link_to image_tag("signup.png", width: 103, height: 24), new_user_path, class: "nav-link" %>
                 </li>
                 <li class="nav-item active">
-                  <%= link_to image_tag("login.png", width: 76, height: 21), login_path, class: "nav-link", "data-turbolinks": false %>
+                  <%= link_to image_tag("login.png", width: 76, height: 21), login_path, class: "nav-link" %>
                 </li>
               <% end %>
             </ul>
