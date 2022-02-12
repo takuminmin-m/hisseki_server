@@ -24,7 +24,7 @@ gem "stimulus-rails"
 
 gem "cssbundling-rails"
 
-gem "sass-rails"
+gem "sassc-rails"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
