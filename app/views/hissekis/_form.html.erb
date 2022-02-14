@@ -1,4 +1,4 @@
-<%= javascript_pack_tag "hisseki/drawer.js" %>
+<%= javascript_include_tag "hisseki/drawer.js" %>
 
 <%= form_with(model: hisseki, id: :hisseki_form) do |form| %>
   <% if hisseki.errors.any? %>
