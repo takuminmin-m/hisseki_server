@@ -1,5 +1,2 @@
 <h1>ログイン</h1>
-<script type="text/javascript">
-  const url4send = "<%= login_url %>";
-</script>
-<%= render "hissekis/form", hisseki: @hisseki, button_message: "認証" %>
+<%= render "hissekis/form", form_params: { url: login_url }, button_message: "認証" %>

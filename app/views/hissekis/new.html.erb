@@ -1,6 +1,3 @@
 <h1>新しい筆跡を登録</h1>
-<script type="text/javascript">
-  const url4send = "<%= hissekis_url %>";
-</script>
 
-<%= render 'form', hisseki: @hisseki, button_message: "登録" %>
+<%= render 'form', form_params: { model: @hisseki }, button_message: "登録" %>

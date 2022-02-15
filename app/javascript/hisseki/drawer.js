@@ -194,6 +194,7 @@ const enable_submit_button = () => {
     if (empty_flag) {
       alert("文字が入力されていません");
       location.reload();
+      e.preventDefault();
       return;
     }
 

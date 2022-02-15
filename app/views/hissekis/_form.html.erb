@@ -1,7 +1,8 @@
 <%= javascript_include_tag "hisseki/drawer.js" %>
 
-<%= form_with(model: hisseki, id: :hisseki_form) do |form| %>
-  <% if hisseki.errors.any? %>
+<%= form_with(id: :hisseki_form, **form_params) do |form| %>
+  <% hisseki ||= nil %>
+  <% if hisseki&.errors&.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(hisseki.errors.count, "error") %> prohibited this hisseki from being saved:</h2>
 
