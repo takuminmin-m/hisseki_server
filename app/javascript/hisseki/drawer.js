@@ -185,8 +185,11 @@ document.onkeydown = function() {
 
 // 送信ボタンの有効化関数 window.onloadに入れる
 const enable_submit_button = () => {
-  document.querySelector("#hisseki_form").addEventListener("submit", (e) => {
-    // e.preventDefault();
+  const form_elem = document.querySelector("#hisseki_form");
+  form_elem.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const url4send = form_elem.action;
 
     const loading_animation = document.querySelector("#submit_loading");
     loading_animation.hidden = false;
@@ -203,6 +206,22 @@ const enable_submit_button = () => {
     const writing_behavior = JSON.stringify(blackPixelList);
     form.append("image_data_uri", png_data_uri);
     form.append("writing_behavior", writing_behavior);
+    const data = {
+     method: "POST",
+     body: form
+   };
+
+   fetch(url4send, data)
+     .then(response => response.json())
+     .then(data => {
+       loading_animation.hidden = true;
+       if (data["message"]) {
+         alert(data["message"]);
+       }
+       if (data["url"]) {
+         location.href = data["url"];
+       }
+     });
   });
 };
 

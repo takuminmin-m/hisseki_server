@@ -1,41 +1,27 @@
 class UserSessionsController < ApplicationController
-  def new
-    @hisseki = Hisseki.new
-  end
+  def new; end
 
   def create
+    p hisseki_params
     @hisseki = Hisseki.new(hisseki_params)
+    unless @hisseki.valid?
+      flash.now[:alert] = "認証に失敗しました"
+      render create
+      return
+    end
+
     user_name = CertificationHissekiJob.perform_now(@hisseki)&.name
 
     p user_name
 
-    p @hisseki.errors
-
-    unless user_name
-      # js側でエラーメッセージを表示
-      @json_return = {
-        message: "認証に失敗しました",
-        url: login_url
-      }
-      render json: @json_return
-      return
-    end
-
     @user = login(user_name, "password")
 
-    @json_return = if @user
-      {
-        message: "認証に成功しました",
-        url: root_url
-      }
+    if @user
+      redirect_to root_url, notice: "認証に成功しました"
     else
-      {
-        message: "認証に失敗しました",
-        url: login_url
-      }
+      flash.now[:alert] = "認証に失敗しました"
+      render create
     end
-
-    render json: @json_return
   end
 
   def destroy
