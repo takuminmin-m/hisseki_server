@@ -2,13 +2,8 @@ class UserSessionsController < ApplicationController
   def new; end
 
   def create
-    p hisseki_params
     @hisseki = Hisseki.new(hisseki_params)
-    unless @hisseki.valid?
-      flash.now[:alert] = "認証に失敗しました"
-      render create
-      return
-    end
+    p "here"
 
     user_name = CertificationHissekiJob.perform_now(@hisseki)&.name
 
@@ -16,12 +11,19 @@ class UserSessionsController < ApplicationController
 
     @user = login(user_name, "password")
 
-    if @user
-      redirect_to root_url, notice: "認証に成功しました"
+    json_return = if @user
+      {
+        message: "認証に成功しました",
+        url: root_url
+      }
     else
-      flash.now[:alert] = "認証に失敗しました"
-      render create
+      {
+        message: "認証に失敗しました",
+        url: login_url
+      }
     end
+
+    render json: json_return
   end
 
   def destroy
