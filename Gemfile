@@ -5,7 +5,7 @@ ruby '3.1.0'
 
 gem 'rails'
 
-gem "sprockets-rails"
+gem "propshaft"
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
