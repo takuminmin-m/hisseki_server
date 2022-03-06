@@ -27,8 +27,8 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    return redirect_to new_hisseki_url, notice: "筆跡を10枚以上登録してください" if current_user.hissekis.count < 10
+    return redirect_to new_hisseki_url, notice: "筆跡を10枚以上登録してください", status: :see_other if current_user.hissekis.count < 10
     logout
-    redirect_to root_path, notice: "ログアウトしました"
+    redirect_to root_path, notice: "ログアウトしました", status: :see_other
   end
 end
