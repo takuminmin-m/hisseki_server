@@ -17,6 +17,8 @@ gem "importmap-rails"
 
 gem "turbo-rails"
 
+gem "dartsass-rails"
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 
