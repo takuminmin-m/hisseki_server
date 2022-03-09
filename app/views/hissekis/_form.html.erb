@@ -1,6 +1,6 @@
 <%= javascript_include_tag "hisseki/drawer.js", defer: true %>
 
-<%= form_with(id: :hisseki_form, **form_params) do |form| %>
+<%= form_with(id: :hisseki_form, **form_params, data: { turbo: false }) do |form| %>
   <% hisseki ||= nil %>
   <% if hisseki&.errors&.any? %>
     <div id="error_explanation">
