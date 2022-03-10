@@ -115,16 +115,14 @@ window.onload = () => {
     board.addEventListener('mouseup', dragEnd);
     board.addEventListener('mouseout', dragEnd);
     board.addEventListener('mousemove', (event) => {
-      // eventの中の値を見たい場合は以下のようにconsole.log(event)で、
-      // デベロッパーツールのコンソールに出力させると良い
       // console.log(event);
 
-      draw(event.layerX, event.layerY);
+      draw(x, y);
     });
   }
 
   function pos(e) {
-    var x, y;
+    let x, y;
     x = e.clientX - board.getBoundingClientRect().left;
     y = e.clientY - board.getBoundingClientRect().top;
     return [x, y];
