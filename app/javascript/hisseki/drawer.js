@@ -116,6 +116,7 @@ window.onload = () => {
     board.addEventListener('mouseout', dragEnd);
     board.addEventListener('mousemove', (event) => {
       // console.log(event);
+      const [x, y] = pos(event);
 
       draw(x, y);
     });
@@ -130,6 +131,7 @@ window.onload = () => {
 
   function touch(canvas) {
     canvas.addEventListener('touchstart', function(e) {
+      e.preventDefault();
       dragStart();
     }, false);
     canvas.addEventListener('touchmove', function(e) {
@@ -139,6 +141,7 @@ window.onload = () => {
       draw(x, y);
     }, false);
     canvas.addEventListener('touchend', function(e) {
+      e.preventDefault();
       dragEnd();
     }, false);
   }
