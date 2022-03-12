@@ -6,6 +6,8 @@ var data;
 var rgba;
 let blackFlag;
 var blackPixelList = [];
+let drawingLimitCounter;
+let counttimer;
 
 
 var canDraw = true;
@@ -40,6 +42,8 @@ window.onload = () => {
       isDrag = false;
       empty_flag = true;
       blackPixelList = [];
+      clearTimeout(drawingLimitCounter);
+      clearInterval(counttimer);
     }
     clear();
   }
@@ -250,17 +254,14 @@ const log_setup = () => {
     blackPixelList.push(pick());
   }
   // counttimerはタイマーというオブジェクト、モノ
-  var counttimer = window.setInterval(countBlackPixel, 10);
-
-  window.setTimeout(function() {
-    window.clearInterval(counttimer); // さっき代入したタイマーを停止
-    console.log(blackPixelList);
-  }, 3000); // 3秒後に実行していた時期が私にもありました
+  counttimer = window.setInterval(countBlackPixel, 10);
 
   function dispMsg() {
+    window.clearInterval(counttimer); // さっき代入したタイマーを停止
+    console.log(blackPixelList);
     context.closePath();
     isDrag = false;
     canDraw = false;
   };
-  window.setTimeout(dispMsg, 3000);
+  drawingLimitCounter = window.setTimeout(dispMsg, 3000);
 }
