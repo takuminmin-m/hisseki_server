@@ -7,7 +7,12 @@ class ApplicationController < ActionController::Base
   end
 
   def model_date
-    File.open(Rails.root.join("ml/hisseki_list.csv"), "r") do |f|
+    hisseki_csv_path = Rails.root.join("ml/hisseki_list.csv")
+
+    # hisseki_list.csvが生成されていないときのエラー回避
+    return Time.new(2020) unless File.exist?(hisseki_csv_path)
+
+    File.open(hisseki_csv_path, "r") do |f|
       return f.atime
     end
   end
