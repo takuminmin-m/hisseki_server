@@ -1,7 +1,7 @@
 <h1>登録された筆跡</h1>
 <p><span class="text-danger">赤字</span>はまだ学習されていない筆跡です</p>
 <br>
-<%= link_to "筆跡を登録", new_hisseki_path, "data-turbolinks": false, class: ["btn btn-primary"] %>
+<%= link_to "筆跡を登録", new_hisseki_path, "data-turbolinks": false, class: ["btn btn-primary"], data: { turbo: false } %>
 
 <ul class="list-group">
   <% @hissekis.each do |hisseki| %>
