@@ -1,5 +1,5 @@
 tensorflow==1.15
 
-numpy==1.22.0
+numpy==1.19.5
 
 matplotlib==3.4.1
