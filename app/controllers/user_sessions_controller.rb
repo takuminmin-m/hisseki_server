@@ -6,7 +6,7 @@ class UserSessionsController < ApplicationController
     p "here"
 
     # user_name = CertificationHissekiJob.perform_now(@hisseki)&.name
-    sleep(30)
+    sleep(10)
     user_name = User.find(1)&.name
 
     p user_name
