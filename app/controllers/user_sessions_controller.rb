@@ -5,9 +5,9 @@ class UserSessionsController < ApplicationController
     @hisseki = Hisseki.new(hisseki_params)
     p "here"
 
-    # user_name = CertificationHissekiJob.perform_now(@hisseki)&.name
-    sleep(30)
-    user_name = User.find(1)&.name
+    user_name = CertificationHissekiJob.perform_now(@hisseki)&.name
+    # sleep(30)
+    # user_name = User.find(1)&.name
 
     p user_name
 
