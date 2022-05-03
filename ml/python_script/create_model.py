@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 import pathlib
 import csv
 
-from functions import *
+from lib.functions import *
+from lib.layers import *
 
 
 model_type = sys.argv[1]

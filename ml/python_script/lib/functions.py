@@ -74,11 +74,3 @@ def separate_2images_and_label(list):
         images2.append(list[i]["image2"])
         labels.append(list[i]["label"])
     return images1, images2, labels
-
-class PreprocessLayers(layers.Layer):
-    def __init__(self):
-        super(PreprocessLayers, self).__init__()
-        self.rescaling = layers.Rescaling(scale=1./255)
-
-    def call(self, inputs):
-        return self.rescaling(inputs)
